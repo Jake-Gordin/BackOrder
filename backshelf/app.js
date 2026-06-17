@@ -4,6 +4,7 @@ const mysql = require ('mysql');
 const app = express();
 const cors = require('cors');
 app.use(cors());
+app.use(express.json());
 //begin listening on 5555 for front-end
 app.listen(5555, () => console.log(`Listening on port 5555`));
 //connect to local mysql
@@ -21,6 +22,17 @@ mySQLCon.connect(function(error) {
     console.log("DB set");
   })
 })
+//db functions
+async function registerUser(registerData) {
+  try {
+    var queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${registerData.first}', '${registerData.last}', '${registerData.user}', '${registerData.pass}');`
+    const [result] = await mySQLCon.query(queryText);
+    return result[0];
+  } catch (error) {
+    throw error;
+    console.log(error.code);
+  }
+}
 //responses
 app.get('/test', (req, res) => {
   //res.send('Received on the live server!');
@@ -36,10 +48,6 @@ app.post('/register', (req, res) => {
   //res.send('Received on the live server!');
     res.send("got your registration request!");
     var reqData = req.body;
-    var queryText = `insert into users (First_Name, Last_Name, Username, Password) values 
-      (${reqData.first}, ${reqData.last}, ${reqData.user}, ${reqData.pass});`
-    mySQLCon.query(queryText, function (error, result) {
-    if (error) throw error;
+    var result = registerUser(reqData);
     res.send(result);
   })
-})
