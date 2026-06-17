@@ -54,7 +54,8 @@ app.post('/register', (req, res) => {
         res.send(error.code);
         return;
       }
-      console.log("got this result from function: " + result)
-      res.send(result);
+      var resultFormat = JSON.stringify(result);
+      console.log("got this result from function: " + resultFormat)
+      res.send(resultFormat);
     })
   })
