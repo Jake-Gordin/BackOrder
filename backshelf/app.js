@@ -31,8 +31,15 @@ app.get('/test', (req, res) => {
     var resultFormat = JSON.stringify(result);
     res.send(resultFormat);
   })
-app.get('/register', (req, res) => {
+})
+app.post('/register', (req, res) => {
   //res.send('Received on the live server!');
     res.send("got your registration request!");
+    var reqData = req.body;
+    var queryText = `insert into users (First_Name, Last_Name, Username, Password) values 
+      (${reqData.first}, ${reqData.last}, ${reqData.user}, ${reqData.pass});`
+    mySQLCon.query(queryText, function (error, result) {
+    if (error) throw error;
+    res.send(result);
   })
 })
