@@ -54,7 +54,7 @@ app.post('/register', (req, res) => {
         res.send(error.code);
         return;
       }
+      console.log("got this result from function: " + result)
+      res.send(result);
     })
-    console.log("got this result from function: " + result)
-    res.send(result);
   })
