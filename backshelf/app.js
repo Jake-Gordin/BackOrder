@@ -28,7 +28,7 @@ function registerUser(registerData) {
     mySQLCon.query(queryText, (error, result) => {
       if (error) {
         console.log(error.code);
-        return error.code;
+        return;
       }
       return result;
     })
@@ -48,7 +48,12 @@ app.post('/register', (req, res) => {
   //res.send('Received on the live server!');
     res.send("got your registration request!");
     var reqData = req.body;
-    var result = registerUser(reqData);
+    try {
+      var result = registerUser(reqData);
+    }
+    catch (error) {
+      res.send(error);
+    }
     console.log("got this result from function: " + result)
     res.send(result);
   })
