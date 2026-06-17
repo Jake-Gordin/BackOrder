@@ -29,7 +29,7 @@ function registerUser(registerData) {
       console.log(error.code);
       return;
     }
-    const [result] = await mySQLCon.query(queryText);
+    const [result] = mySQLCon.query(queryText);
     return result[0];
 }
 //responses
