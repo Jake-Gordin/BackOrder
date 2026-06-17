@@ -36,7 +36,6 @@ function registerUser(registerData) {
 }
 //responses
 app.get('/test', (req, res) => {
-  //res.send('Received on the live server!');
   console.log('received message');
   var queryText = "select * from users;"
   mySQLCon.query(queryText, function (error, result) {
@@ -46,10 +45,17 @@ app.get('/test', (req, res) => {
   })
 })
 app.post('/register', (req, res) => {
-  //res.send('Received on the live server!');
     res.send("got your registration request!");
     var reqData = req.body;
-    var result = registerUser(reqData);
+    var queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${registerData.first}', '${registerData.last}', '${registerData.user}', '${registerData.pass}');`
+    mySQLCon.query(queryText, (error, results) => {
+      if (error) {
+        console.log("DB Error: " + error.code);
+        res.send(error.code);
+        return;
+      }
+
+    })
     console.log("got this result from function: " + result)
     res.send(result);
   })
