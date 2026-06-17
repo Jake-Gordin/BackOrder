@@ -49,5 +49,6 @@ app.post('/register', (req, res) => {
     res.send("got your registration request!");
     var reqData = req.body;
     var result = registerUser(reqData);
+    console.log("got this result from function: " + result)
     res.send(result);
   })
