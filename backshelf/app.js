@@ -1,10 +1,10 @@
 //definitions and requirements
 const express = require ('express');
 const mysql = require ('mysql');
-//begin listening on 5555 for front-end
 const app = express();
 const cors = require('cors');
 app.use(cors());
+//begin listening on 5555 for front-end
 app.listen(5555, () => console.log(`Listening on port 5555`));
 //connect to local mysql
 const mySQLCon = mysql.createConnection({
@@ -22,7 +22,7 @@ mySQLCon.connect(function(error) {
   })
 })
 //responses
-app.get('/', (req, res) => {
+app.get('/test', (req, res) => {
   //res.send('Received on the live server!');
   console.log('received message');
   var queryText = "select * from users;"

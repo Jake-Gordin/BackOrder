@@ -1,11 +1,12 @@
  import axios from 'axios';
+ axios.defaults.baseURL = 'http://snakeserver.tech:5555'
  export function testCom() {
-    axios.get('http://snakeserver.tech:5555').then((response) => {
+    axios.get('/test').then((response) => {
       console.log(response.data);
     });
   }
   export function newRegister(newPackage) {
-    axios.put('http://snakeserver.tech/register:5555', newPackage).then((response) => {
+    axios.post('/register', newPackage).then((response) => {
       console.log(response.data);
     });
   }
