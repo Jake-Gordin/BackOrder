@@ -28,7 +28,7 @@ function registerUser(registerData) {
     mySQLCon.query(queryText, (error, result) => {
       if (error) {
         console.log(error.code);
-        return;
+        return error.code;
       }
       return result;
     })
