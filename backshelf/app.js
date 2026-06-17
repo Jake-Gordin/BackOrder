@@ -31,4 +31,8 @@ app.get('/', (req, res) => {
     var resultFormat = JSON.stringify(result);
     res.send(resultFormat);
   })
+app.get('/register', (req, res) => {
+  //res.send('Received on the live server!');
+    res.send("got your registration request!");
+  })
 })
