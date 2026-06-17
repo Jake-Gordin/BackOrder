@@ -1,0 +1,17 @@
+{
+  "name": "backshelf",
+  "version": "1.0.0",
+  "description": "back-end DB interface for Supra Coders practical CRUD application",
+  "license": "ISC",
+  "author": "George \"Jake\" Gordin",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mysql": "^2.18.1"
+  }
+}
