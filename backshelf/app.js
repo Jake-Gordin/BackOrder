@@ -25,11 +25,12 @@ mySQLCon.connect(function(error) {
 //db functions
 function registerUser(registerData) {
     var queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${registerData.first}', '${registerData.last}', '${registerData.user}', '${registerData.pass}');`
-    mySQLCon.query(queryText, (error, result) => {
+    mySQLCon.query(queryText, function (error, result) {
       if (error) {
+        throw error;
         console.log(error.code);
-        return;
       }
+      var resultFormat = JSON.stringify(result);
       return result;
     })
 }
@@ -48,12 +49,7 @@ app.post('/register', (req, res) => {
   //res.send('Received on the live server!');
     res.send("got your registration request!");
     var reqData = req.body;
-    try {
-      var result = registerUser(reqData);
-    }
-    catch (error) {
-      res.send(error);
-    }
+    var result = registerUser(reqData);
     console.log("got this result from function: " + result)
     res.send(result);
   })
