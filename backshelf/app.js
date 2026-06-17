@@ -23,15 +23,14 @@ mySQLCon.connect(function(error) {
   })
 })
 //db functions
-async function registerUser(registerData) {
-  try {
+function registerUser(registerData) {
     var queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${registerData.first}', '${registerData.last}', '${registerData.user}', '${registerData.pass}');`
+    if (error) {
+      console.log(error.code);
+      return;
+    }
     const [result] = await mySQLCon.query(queryText);
     return result[0];
-  } catch (error) {
-    throw error;
-    console.log(error.code);
-  }
 }
 //responses
 app.get('/test', (req, res) => {
