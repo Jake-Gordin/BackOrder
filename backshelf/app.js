@@ -56,6 +56,6 @@ app.post('/register', (req, res) => {
       }
       var resultFormat = JSON.stringify(result);
       console.log("got this result from function: " + resultFormat)
-      res.send(resultFormat);
+      res.send(result.affectedRows);
     })
   })
