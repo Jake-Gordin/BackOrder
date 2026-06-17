@@ -45,7 +45,7 @@ app.get('/test', (req, res) => {
   })
 })
 app.post('/register', (req, res) => {
-    res.send("got your registration request!");
+    //res.send("got your registration request!");
     var reqData = req.body;
     var queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${reqData.first}', '${reqData.last}', '${reqData.user}', '${reqData.pass}');`
     mySQLCon.query(queryText, (error, results) => {
@@ -54,7 +54,6 @@ app.post('/register', (req, res) => {
         res.send(error.code);
         return;
       }
-
     })
     console.log("got this result from function: " + result)
     res.send(result);
