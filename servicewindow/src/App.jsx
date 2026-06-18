@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FrontPageBox, RegisterBox }  from './components/modes'
+import { FrontPageBox, RegisterBox, InventoryList, AddItem }  from './components/modes'
 import { testCom } from './scripts/api'
 import './App.css'
 export default function App() {
@@ -7,9 +7,13 @@ export default function App() {
   const [activeUser, setActiveUser] = useState('Guest');
   return (
     <>
-    <label>{activeUser}</label>
+    <label>Currently logged in as: {activeUser}</label>
+    <div className="divider"></div>
+    <button className="btn btn-neutral mt-2" onClick={() => setActiveUser('Guest')}>Logout</button>
     {activePage === 'main' && <FrontPageBox updatePage={setActivePage} updateUser={setActiveUser} />}
     {activePage === 'register' && <RegisterBox updatePage={setActivePage} updateUser={setActiveUser} />}
+    {activePage === 'inventory' && <InventoryList updatePage={setActivePage} currentUser={activeUser} />}
+    {activePage === 'addItem' && <AddItem updatePage={setActivePage} />}
     </>
   )
 }
