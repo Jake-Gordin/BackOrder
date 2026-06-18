@@ -98,7 +98,6 @@ app.post('/login', (req, res) => {
         return;
       }
       const resultFormat = JSON.stringify(result);
-      console.log(result);
-      res.send(result.affectedRows);
+      res.send(resultFormat);
     })
 })
