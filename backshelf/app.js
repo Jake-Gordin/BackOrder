@@ -99,9 +99,9 @@ app.post('/login', (req, res) => {
       }
       const resultFormat = JSON.stringify(result);
       //console.log(result);
-      console.log(result[0]);
+      console.log(result[0].Password);
       //console.log(resultFormat);
-      console.log(resultFormat[0]);
+      //console.log(resultFormat[0]);
       //console.log(resultFormat.Password);
       res.send(result);
     })
