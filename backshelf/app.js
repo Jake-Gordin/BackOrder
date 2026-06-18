@@ -65,8 +65,8 @@ app.get('/test', (req, res) => {
   var queryText = "select * from users;"
   mySQLCon.query(queryText, function (error, result) {
     if (error) throw error;
-    var resultFormat = JSON.stringify(result);
-    res.send(resultFormat);
+    //var resultFormat = JSON.stringify(result);
+    res.send(result);
   })
 })
 //new user registration
@@ -82,11 +82,11 @@ app.post('/register', async (req, res) => {
       }
       const resultFormat = JSON.stringify(result);
       //console.log("got this result from function: " + resultFormat)
-      res.send(result.affectedRows);
+      res.send("REGISTRATION_OK");
     })
 })
 //existing user login
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const reqData = req.body;
     const encryptedPass = encrypt(reqData.pass);
     console.log('searching for user: ' + reqData.user);
@@ -97,12 +97,17 @@ app.post('/login', (req, res) => {
         res.send(error.code);
         return;
       }
-      const resultFormat = JSON.stringify(result);
-      //console.log(result);
-      console.log(result[0].Password);
-      //console.log(resultFormat);
-      //console.log(resultFormat[0]);
-      //console.log(resultFormat.Password);
-      res.send(result);
+      //console.log(result[0].Password);
+      try {
+     const loginVerdict = await comparePass(reqData.pass, result[0].Password)
+    res.send(loginVerdict);
+  }
+  catch (error) {
+    console.log("DB Error: " + error.code);
+        res.send(error.code);
+        return;
+  }
+     
+      
     })
 })

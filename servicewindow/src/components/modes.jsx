@@ -80,7 +80,7 @@ export function RegisterBox({updatePage}) {
                 setShowRegMessage(true);
                 setRegMessage('Username already exists. Please input a unique username.');
             }
-            else {
+            else if (regResult === "REGISTRATION_OK"){
                 //show registration successful and maybe a short timer before moving to inventory as new user
                 setShowRegMessage(false);
             }
