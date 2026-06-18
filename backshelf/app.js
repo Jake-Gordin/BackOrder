@@ -92,7 +92,7 @@ app.post('/register', async (req, res) => {
 app.post('/login', (req, res) => {
     const reqData = req.body;
     const encryptedPass = encrypt(reqData.pass);
-    console.log('searching for user: ' + reqData.user);
+    //console.log('searching for user: ' + reqData.user);
     const queryText = `select * from users where Username = '${reqData.user}'`;
     mySQLCon.query(queryText, async (error, result) => {
       if (error) {
@@ -124,6 +124,38 @@ app.post('/login', (req, res) => {
           }
           res.send(currentUser);
         }
+      }
+      catch (error) {
+        console.log("DB Error: " + error.code);
+        res.send(error.code);
+        return;
+      } 
+    })
+})
+//add new item
+app.post('/NewItem', (req, res) => {
+    const reqData = req.body;
+    const queryText = `select ID from users where Username = '${reqData.user}'`;
+    mySQLCon.query(queryText, async (error, result) => {
+      if (error) {
+        console.log("DB Error: " + error.code);
+        res.send("ERR_NO_USER");
+        return;
+      }
+      try {
+        const userID = result[0].ID;
+        console.log("adding item using ID: " + result[0].ID);
+        const queryTextItem = `insert into items (User_ID, Item_Name, Description, Quantity) values ('${userID}', '${reqData.name}', '${reqData.description}', '${reqData.quantity}');`
+        mySQLCon.query(queryTextItem, (errorItem, resultItem) => {
+          if (errorItem) {
+            console.log("DB Error: " + error.code);
+            res.send("ITEM_ADD_ERROR");
+            return;
+          }
+          else {
+            res.send("ITEM_ADD_OK");
+          }
+        })
       }
       catch (error) {
         console.log("DB Error: " + error.code);

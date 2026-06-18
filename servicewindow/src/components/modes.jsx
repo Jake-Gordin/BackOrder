@@ -144,7 +144,7 @@ export function InventoryList({updatePage, currentUser}) {
         <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
             <div className="text-center lg:text-left">
-            <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>
+            {(currentUser != "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
             <div className="divider"></div>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Back</button>
         </div>
@@ -166,7 +166,7 @@ export function AddItem({updatePage, currentUser}) {
         setNewQuantity(e.target.value);
     }
     function newItem(newPackage) {
-        axios.post('/register', newPackage).then((response) => {
+        axios.post('/NewItem', newPackage).then((response) => {
             const regResult = response.data;
             if (regResult === 'ER_DUP_ENTRY') {
                 //show message saying that the username is duped
