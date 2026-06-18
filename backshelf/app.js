@@ -100,7 +100,18 @@ app.post('/login', (req, res) => {
       //console.log(result[0].Password);
       try {
         const loginVerdict = await comparePass(reqData.pass, result[0].Password)
-        res.send(loginVerdict);
+        if (loginVerdict) {
+          const currentUser = {
+            currentUser: reqData.user
+          }
+          res.send(currentUser);
+        }
+        else {
+           const currentUser = {
+            currentUser: "BAD_PASS"
+          }
+          res.send(currentUser);
+        }
       }
       catch (error) {
         console.log("DB Error: " + error.code);
