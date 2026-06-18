@@ -4,6 +4,12 @@ export function FrontPageBox({updatePage}) {
     const [showRegister, setShowRegister] = useState(false);
     const [fieldUser, setUser] = useState('');
     const [fieldPass, setPass] = useState('');
+    const changeUser = (e) => {
+        setUser(e.target.value);
+    }
+    const changePass = (e) => {
+        setPass(e.target.value);
+    }
     function login(newLogin) {
         console.log("preparing to transmit");
         axios.post('/login', newLogin).then((response) => {
@@ -17,7 +23,7 @@ export function FrontPageBox({updatePage}) {
             user : fieldUser,
             pass : fieldPass
         }
-        console.log("prepped login package");
+        //console.log("prepped login package");
         login(loginPackage);
         }
     return (
@@ -33,8 +39,8 @@ export function FrontPageBox({updatePage}) {
         <div className="card-body">
             <fieldset className="fieldset">
             <label>Inventory Managers</label>
-            <input type="text" className="input" onChange={setUser} placeholder="Username" />
-            <input type="password" className="input" onChange={setPass} placeholder="Password" />
+            <input type="text" className="input" onChange={changeUser} placeholder="Username" />
+            <input type="password" className="input" onChange={changePass} placeholder="Password" />
             <button className="btn btn-neutral mt-4" onClick={() => prepLogin()}>Login</button>
             <div className="divider"></div>
             <label>New Managers Register Here</label>

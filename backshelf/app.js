@@ -70,9 +70,9 @@ app.get('/test', (req, res) => {
   })
 })
 //new user registration
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
     const reqData = req.body;
-    const encryptedPass = encrypt(reqData.pass);
+    const encryptedPass = await encrypt(reqData.pass);
     const queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${reqData.first}', '${reqData.last}', '${reqData.user}', '${encryptedPass}');`
     mySQLCon.query(queryText, (error, result) => {
       if (error) {
