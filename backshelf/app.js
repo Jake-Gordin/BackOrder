@@ -90,7 +90,7 @@ app.post('/login', (req, res) => {
     const reqData = req.body;
     const encryptedPass = encrypt(reqData.pass);
     console.log('searching for user: ' + reqData.user);
-    const queryText = `select from users where Username = '${reqData.user}'`;
+    const queryText = `select * from users where Username = '${reqData.user}'`;
     mySQLCon.query(queryText, (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
