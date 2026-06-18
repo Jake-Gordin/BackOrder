@@ -135,6 +135,7 @@ app.post('/login', (req, res) => {
 //add new item
 app.post('/NewItem', (req, res) => {
     const reqData = req.body;
+    console.log("searching using: " + reqData.user);
     const queryText = `select ID from users where Username = '${reqData.user}'`;
     mySQLCon.query(queryText, async (error, result) => {
       if (error) {
@@ -142,6 +143,7 @@ app.post('/NewItem', (req, res) => {
         res.send("ERR_NO_USER");
         return;
       }
+      console.log(result);
       try {
         const userID = result[0].ID;
         console.log("adding item using ID: " + result[0].ID);

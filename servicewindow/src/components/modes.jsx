@@ -156,6 +156,8 @@ export function AddItem({updatePage, currentUser}) {
     const [newName, setNewName] = useState('');
     const [newDescription, setNewDescription] = useState('');
     const [newQuantity, setNewQuantity] = useState(0);
+    const [addItemMessage, setAddItemMessage] = useState('');
+    const [showAddItemMessage, setShowAddItemMessage] = useState(false);
     const changeName = (e) => {
         setNewName(e.target.value);
     }
@@ -167,17 +169,14 @@ export function AddItem({updatePage, currentUser}) {
     }
     function newItem(newPackage) {
         axios.post('/NewItem', newPackage).then((response) => {
-            const regResult = response.data;
-            if (regResult === 'ER_DUP_ENTRY') {
-                //show message saying that the username is duped
-                setShowRegMessage(true);
-                setRegMessage('Username already exists. Please input a unique username.');
+            const itemResult = response.data;
+            if (itemResult === 'ITEM_ADD_OK') {
+                updatePage('inventory');
+                setShowAddItemMessage(false);
             }
             else {
-                //show registration successful and maybe a short timer before moving to inventory as new user
-                setShowRegMessage(false);
-                updateUser(regResult.currentUser);
-                updatePage('inventory');
+                setAddItemMessage('Error! Check item parameters and try again.');
+                setShowAddItemMessage(true);
             }
     })
     }
@@ -202,6 +201,7 @@ export function AddItem({updatePage, currentUser}) {
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
         <div className="card-body">
             <fieldset className="fieldset">
+            {showAddItemMessage && <label>{addItemMessage}</label>}
             <input id="newFirstField" type="text" onChange={changeName} className="input" placeholder="Item Name" />
             <textarea className="textarea" placeholder="Item Description" onChange={changeDescription}></textarea>
             <input id="newLastField" type="number" min="0" step="1" max="10000" onChange={changeQuantity} className="input" placeholder="Quantity" />
