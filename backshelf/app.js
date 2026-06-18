@@ -86,12 +86,12 @@ app.post('/register', async (req, res) => {
     })
 })
 //existing user login
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
     const reqData = req.body;
     const encryptedPass = encrypt(reqData.pass);
     console.log('searching for user: ' + reqData.user);
     const queryText = `select * from users where Username = '${reqData.user}'`;
-    mySQLCon.query(queryText, (error, result) => {
+    mySQLCon.query(queryText, async (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
         res.send(error.code);
@@ -99,15 +99,13 @@ app.post('/login', async (req, res) => {
       }
       //console.log(result[0].Password);
       try {
-     const loginVerdict = await comparePass(reqData.pass, result[0].Password)
-    res.send(loginVerdict);
-  }
-  catch (error) {
-    console.log("DB Error: " + error.code);
+        const loginVerdict = await comparePass(reqData.pass, result[0].Password)
+        res.send(loginVerdict);
+      }
+      catch (error) {
+        console.log("DB Error: " + error.code);
         res.send(error.code);
         return;
-  }
-     
-      
+      } 
     })
 })
