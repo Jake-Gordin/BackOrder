@@ -82,7 +82,10 @@ app.post('/register', async (req, res) => {
       }
       const resultFormat = JSON.stringify(result);
       //console.log("got this result from function: " + resultFormat)
-      res.send("REGISTRATION_OK");
+      const currentUser = {
+            currentUser: reqData.user
+        }
+      res.send(currentUser);
     })
 })
 //existing user login

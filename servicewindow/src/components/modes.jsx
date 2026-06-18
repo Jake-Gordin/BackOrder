@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import axios from 'axios';
-export function FrontPageBox({updatePage}) {
+export function FrontPageBox({updatePage, updateUser}) {
     const [showRegister, setShowRegister] = useState(false);
     const [fieldUser, setUser] = useState('');
     const [fieldPass, setPass] = useState('');
+    const [ShowLoginMessage, setShowLoginMessage] = useState(false);
+    const [loginMessage, setLoginMessage] = useState('');
     const changeUser = (e) => {
         setUser(e.target.value);
     }
@@ -11,11 +13,22 @@ export function FrontPageBox({updatePage}) {
         setPass(e.target.value);
     }
     function login(newLogin) {
-        console.log("preparing to transmit");
+        //console.log("preparing to transmit");
         axios.post('/login', newLogin).then((response) => {
-            console.log("response received");
+            //console.log("response received");
             const loginResult = response.data;
-            console.log("received login response: " + loginResult.currentUser)
+            if (loginResult.currentUser === undefined) {
+                setShowLoginMessage(true);
+                setLoginMessage("User does not exist. Please register as a new manager.");
+            }
+            else if (loginResult.currentUser === "BAD_PASS") {
+                setShowLoginMessage(true);
+                setLoginMessage("Incorrect Password!");
+            }
+            else {
+                updateUser(loginResult.currentUser);
+                setShowLoginMessage(false);
+            }
         })
     }
     function prepLogin() {
@@ -38,6 +51,7 @@ export function FrontPageBox({updatePage}) {
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
         <div className="card-body">
             <fieldset className="fieldset">
+            {ShowLoginMessage && <label>{loginMessage}</label>}
             <label>Inventory Managers</label>
             <input type="text" className="input" onChange={changeUser} placeholder="Username" />
             <input type="password" className="input" onChange={changePass} placeholder="Password" />
@@ -53,7 +67,7 @@ export function FrontPageBox({updatePage}) {
     </div>
     )
 }
-export function RegisterBox({updatePage}) {
+export function RegisterBox({updatePage, updateUser}) {
     const [newFirst, setNewFirst] = useState('');
     const [newLast, setNewLast] = useState('');
     const [newUser, setNewUser] = useState('');
@@ -80,9 +94,10 @@ export function RegisterBox({updatePage}) {
                 setShowRegMessage(true);
                 setRegMessage('Username already exists. Please input a unique username.');
             }
-            else if (regResult === "REGISTRATION_OK"){
+            else {
                 //show registration successful and maybe a short timer before moving to inventory as new user
                 setShowRegMessage(false);
+                updateUser(regResult.currentUser);
             }
     })
     }
