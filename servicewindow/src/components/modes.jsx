@@ -15,7 +15,7 @@ export function FrontPageBox({updatePage}) {
         axios.post('/login', newLogin).then((response) => {
             console.log("response received");
             const loginResult = response.data;
-            console.log("received login response: " + loginResult)
+            console.log("received login response: " + loginResult.currentUser)
         })
     }
     function prepLogin() {
