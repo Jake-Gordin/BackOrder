@@ -13,7 +13,7 @@ export default function App() {
     {activePage === 'main' && <FrontPageBox updatePage={setActivePage} updateUser={setActiveUser} />}
     {activePage === 'register' && <RegisterBox updatePage={setActivePage} updateUser={setActiveUser} />}
     {activePage === 'inventory' && <InventoryList updatePage={setActivePage} currentUser={activeUser} />}
-    {activePage === 'addItem' && <AddItem updatePage={setActivePage} />}
+    {activePage === 'addItem' && <AddItem updatePage={setActivePage} currentUser={activeUser} />}
     </>
   )
 }

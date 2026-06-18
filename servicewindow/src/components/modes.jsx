@@ -144,6 +144,19 @@ export function InventoryList({updatePage, currentUser}) {
         <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
             <div className="text-center lg:text-left">
+            {/* This is where items will be populated*/}
+            {function populateItems() {
+                if (currentUser === "Guest") {
+                    axios.get('/items').then((response) => {
+                    const regResult = response.data;
+                        regResult.forEach(element => {
+                            return (
+                                <label>{element.ID} {element.User_ID} {element.Item_Name} {element.Description} {element.Quantity}</label>
+                            )
+                        });
+                    })
+                }
+            }}
             {(currentUser != "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
             <div className="divider"></div>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Back</button>
@@ -187,6 +200,7 @@ export function AddItem({updatePage, currentUser}) {
             description : newDescription,
             quantity : newQuantity
         }
+        console.log("sending package: " + newPackage.name);
         newItem(newPackage);
         }
     return (

@@ -23,18 +23,6 @@ mySQLCon.connect(function(error) {
     console.log("DB set");
   })
 })
-//db functions
-function registerUser(registerData) {
-    var queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${registerData.first}', '${registerData.last}', '${registerData.user}', '${registerData.pass}');`
-    mySQLCon.query(queryText, function (error, result) {
-      if (error) {
-        throw error;
-        console.log(error.code);
-      }
-      var resultFormat = JSON.stringify(result);
-      return result;
-    })
-}
 //encryption functions
 async function encrypt(pass) {
   const salt = 12;
@@ -164,5 +152,19 @@ app.post('/NewItem', (req, res) => {
         res.send(error.code);
         return;
       } 
+    })
+})
+//list all items
+app.get('/items', (req, res) => {
+    const queryText = `select * from items`;
+    mySQLCon.query(queryText, async (error, result) => {
+      if (error) {
+        console.log("DB Error: " + error.code);
+        res.send("DB_ERROR: " + error.code);
+        return;
+      }
+      else {
+        res.send(result);
+      }
     })
 })
