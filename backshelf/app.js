@@ -103,7 +103,7 @@ app.post('/login', (req, res) => {
       //console.log(result[0].Password);
       try {
         const loginVerdict = await comparePass(reqData.pass, result[0].Password)
-        if (result[0] === undefined) {
+        if (result === undefined) {
           const currentUser = {
             currentUser: "NO_USER"
         }
