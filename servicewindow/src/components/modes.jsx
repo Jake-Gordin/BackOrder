@@ -1,7 +1,22 @@
-import { useState } from 'react'
-import { newRegister, testCom } from '../scripts/api'
+import { useState } from 'react';
+import axios from 'axios';
 export function FrontPageBox({updatePage}) {
     const [showRegister, setShowRegister] = useState(false);
+    const [fieldUser, setUser] = useState('');
+    const [fieldPass, setPass] = useState('');
+    function login(loginPackage) {
+        axios.post('/register', loginPackage).then((response) => {
+            const loginResult = response.data;
+            console.log("received login response: " + loginResult)
+    })
+    }
+    function prepLogin() {
+        const loginPackage = {
+            user : fieldUser,
+            pass : fieldPass
+        }
+        login(loginPackage);
+        }
     return (
     <div className="hero bg-base-200 min-h-screen">
     <div className="hero-content flex-col lg:flex-row-reverse">
@@ -15,9 +30,9 @@ export function FrontPageBox({updatePage}) {
         <div className="card-body">
             <fieldset className="fieldset">
             <label>Inventory Managers</label>
-            <input type="text" className="input" placeholder="Username" />
-            <input type="password" className="input" placeholder="Password" />
-            <button className="btn btn-neutral mt-4" onClick={() => testCom()}>Login</button>
+            <input type="text" className="input" onChange={setUser} placeholder="Username" />
+            <input type="password" className="input" onChange={setPass} placeholder="Password" />
+            <button className="btn btn-neutral mt-4" onClick={() => prepLogin()}>Login</button>
             <div className="divider"></div>
             <label>New Managers Register Here</label>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('register')}>Register</button>
@@ -34,6 +49,8 @@ export function RegisterBox({updatePage}) {
     const [newLast, setNewLast] = useState('');
     const [newUser, setNewUser] = useState('');
     const [newPass, setNewPass] = useState('');
+    const [ShowRegMessage, setShowRegMessage] = useState(false);
+    const [regMessage, setRegMessage] = useState('');
     const changeFirst = (e) => {
         setNewFirst(e.target.value);
     }
@@ -46,7 +63,21 @@ export function RegisterBox({updatePage}) {
     const changePass = (e) => {
         setNewPass(e.target.value);
     }
-    function prepRegisterPackage() {
+    function newRegister(newPackage) {
+        axios.post('/register', newPackage).then((response) => {
+            const regResult = response.data;
+            if (regResult === 'ER_DUP_ENTRY') {
+                //show message saying that the username is duped
+                setShowRegMessage(true);
+                setRegMessage('Username already exists. Please input a unique username.');
+            }
+            else {
+                //show registration successful and maybe a short timer before moving to inventory as new user
+                setShowRegMessage(false);
+            }
+    })
+    }
+    function prepRegister() {
         const newPackage = {
             first : newFirst,
             last : newLast,
@@ -54,7 +85,7 @@ export function RegisterBox({updatePage}) {
             pass : newPass
         }
         newRegister(newPackage);
-    }
+        }
     return (
     <div className="hero bg-base-200 min-h-screen">
     <div className="hero-content flex-col lg:flex-row-reverse">
@@ -67,12 +98,12 @@ export function RegisterBox({updatePage}) {
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
         <div className="card-body">
             <fieldset className="fieldset">
-            <label></label>
+            {ShowRegMessage && <label>{regMessage}</label>}
             <input id="newFirstField" type="text" onChange={changeFirst} className="input" placeholder="First Name" />
             <input id="newLastField" type="text" onChange={changeLast} className="input" placeholder="Last Name" />
             <input id="newUserField" type="text" onChange={changeUser} className="input" placeholder="Username" />
             <input id="newPassField" type="password" onChange={changePass} className="input" placeholder="New Password" />
-            <button className="btn btn-neutral mt-4" onClick={() => prepRegisterPackage()}>Register</button>
+            <button className="btn btn-neutral mt-4" onClick={() => prepRegister()}>Register</button>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Cancel</button>
             </fieldset>
         </div>

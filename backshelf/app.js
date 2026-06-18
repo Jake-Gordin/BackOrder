@@ -3,6 +3,7 @@ const express = require ('express');
 const mysql = require ('mysql');
 const app = express();
 const cors = require('cors');
+const bcrypt = require('bcrypt');
 app.use(cors());
 app.use(express.json());
 //begin listening on 5555 for front-end
@@ -34,7 +35,30 @@ function registerUser(registerData) {
       return result;
     })
 }
+//encryption functions
+async function encrypt(pass) {
+  const salt = 12;
+  try {
+    const encryptedPass = await bcrypt.hash(pass, salt);
+    return encryptedPass;
+  }
+  catch (error) {
+    console.log("Failed encryption: ", error);
+    throw error;
+  }
+}
+async function comparePass(pass, encryptedPass) {
+  try {
+    const verdict = await bcrypt.compare(pass, encryptedPass);
+    return verdict;
+  }
+  catch (error) {
+    console.log("Failed password compare", error);
+    throw error;
+  }
+}
 //responses
+//basic comms test
 app.get('/test', (req, res) => {
   console.log('received message');
   var queryText = "select * from users;"
@@ -44,18 +68,35 @@ app.get('/test', (req, res) => {
     res.send(resultFormat);
   })
 })
+//new user registration
 app.post('/register', (req, res) => {
-    //res.send("got your registration request!");
-    var reqData = req.body;
-    var queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${reqData.first}', '${reqData.last}', '${reqData.user}', '${reqData.pass}');`
+    const reqData = req.body;
+    const encryptedPass = encrypt(reqData.pass);
+    const queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${reqData.first}', '${reqData.last}', '${reqData.user}', '${encryptedPass}');`
     mySQLCon.query(queryText, (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
         res.send(error.code);
         return;
       }
-      var resultFormat = JSON.stringify(result);
+      const resultFormat = JSON.stringify(result);
       console.log("got this result from function: " + resultFormat)
       res.send(result.affectedRows);
     })
-  })
+})
+//existing user login
+app.post('/login', (req, res) => {
+    const reqData = req.body;
+    const encryptedPass = encrypt(reqData.pass);
+    const queryText = `select from users where Username = '${reqData.user}'`;
+    mySQLCon.query(queryText, (error, result) => {
+      if (error) {
+        console.log("DB Error: " + error.code);
+        res.send(error.code);
+        return;
+      }
+      const resultFormat = JSON.stringify(result);
+      console.log(result);
+      res.send(result.affectedRows);
+    })
+})

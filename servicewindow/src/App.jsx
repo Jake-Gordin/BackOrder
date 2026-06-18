@@ -6,7 +6,7 @@ export default function App() {
   const [activePage, setActivePage] = useState('main');
   return (
     <>
-    {activePage === 'main' && <FrontPageBox updatePage={setActivePage}></FrontPageBox>}
+    {activePage === 'main' && <FrontPageBox updatePage={setActivePage} />}
     {activePage === 'register' && <RegisterBox updatePage={setActivePage} />}
     </>
   )

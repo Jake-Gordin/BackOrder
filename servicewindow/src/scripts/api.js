@@ -5,8 +5,4 @@
       console.log(response.data);
     });
   }
-  export function newRegister(newPackage) {
-    axios.post('/register', newPackage).then((response) => {
-      console.log(response.data);
-    });
-  }
+
