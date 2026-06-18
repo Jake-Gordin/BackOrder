@@ -4,17 +4,20 @@ export function FrontPageBox({updatePage}) {
     const [showRegister, setShowRegister] = useState(false);
     const [fieldUser, setUser] = useState('');
     const [fieldPass, setPass] = useState('');
-    function login(loginPackage) {
-        axios.post('/register', loginPackage).then((response) => {
+    function login(newLogin) {
+        console.log("preparing to transmit");
+        axios.post('/login', newLogin).then((response) => {
+            console.log("response received");
             const loginResult = response.data;
             console.log("received login response: " + loginResult)
-    })
+        })
     }
     function prepLogin() {
         const loginPackage = {
             user : fieldUser,
             pass : fieldPass
         }
+        console.log("prepped login package");
         login(loginPackage);
         }
     return (
@@ -102,7 +105,7 @@ export function RegisterBox({updatePage}) {
             <input id="newFirstField" type="text" onChange={changeFirst} className="input" placeholder="First Name" />
             <input id="newLastField" type="text" onChange={changeLast} className="input" placeholder="Last Name" />
             <input id="newUserField" type="text" onChange={changeUser} className="input" placeholder="Username" />
-            <input id="newPassField" type="password" onChange={changePass} className="input" placeholder="New Password" />
+            <input id="newPassField" type="text" onChange={changePass} className="input" placeholder="New Password" />
             <button className="btn btn-neutral mt-4" onClick={() => prepRegister()}>Register</button>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Cancel</button>
             </fieldset>

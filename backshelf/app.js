@@ -41,6 +41,7 @@ async function encrypt(pass) {
   try {
     const encryptedPass = await bcrypt.hash(pass, salt);
     return encryptedPass;
+    console.log("added encrypted password");
   }
   catch (error) {
     console.log("Failed encryption: ", error);
@@ -80,7 +81,7 @@ app.post('/register', (req, res) => {
         return;
       }
       const resultFormat = JSON.stringify(result);
-      console.log("got this result from function: " + resultFormat)
+      //console.log("got this result from function: " + resultFormat)
       res.send(result.affectedRows);
     })
 })
@@ -88,6 +89,7 @@ app.post('/register', (req, res) => {
 app.post('/login', (req, res) => {
     const reqData = req.body;
     const encryptedPass = encrypt(reqData.pass);
+    console.log('searching for user: ' + reqData.user);
     const queryText = `select from users where Username = '${reqData.user}'`;
     mySQLCon.query(queryText, (error, result) => {
       if (error) {
