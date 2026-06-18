@@ -98,6 +98,11 @@ app.post('/login', (req, res) => {
         return;
       }
       const resultFormat = JSON.stringify(result);
+      console.log(result);
+      console.log(result[0]);
+      console.log(resultFormat);
+      console.log(resultFormat[0]);
+      console.log(resultFormat[0].Password);
       res.send(result);
     })
 })
