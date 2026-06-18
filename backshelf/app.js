@@ -94,7 +94,10 @@ app.post('/login', (req, res) => {
     mySQLCon.query(queryText, async (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
-        res.send(error.code);
+        const currentUser = {
+            currentUser: "NO_USER"
+        }
+        res.send(currentUser);
         return;
       }
       //console.log(result[0].Password);
