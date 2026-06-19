@@ -169,7 +169,6 @@ export function InventoryList({updatePage, currentUser, currentID}) {
                 const regResult = response.data;
                 console.log(regResult);
                 regResult.forEach(element => {
-                    //console.log("adding element: " + element.User_ID);
                     itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
                 });
                 setItems(itemList);
