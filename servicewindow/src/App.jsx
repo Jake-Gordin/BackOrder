@@ -5,13 +5,15 @@ import './App.css'
 export default function App() {
   const [activePage, setActivePage] = useState('main');
   const [activeUser, setActiveUser] = useState('Guest');
+  const [activeUserID, setActiveUserID] = useState(0);
+  const [registrationStatus, setRegistrationStatus] = useState(false);
   return (
     <>
-    <label>Currently logged in as: {activeUser}</label>
+    {activeUser != "Guest" && <label>Currently logged in as: {activeUser}</label>}
     <div className="divider"></div>
-    <button className="btn btn-neutral mt-2" onClick={() => setActiveUser('Guest')}>Logout</button>
-    {activePage === 'main' && <FrontPageBox updatePage={setActivePage} updateUser={setActiveUser} />}
-    {activePage === 'register' && <RegisterBox updatePage={setActivePage} updateUser={setActiveUser} />}
+    {activeUser != "Guest" && <button className="btn btn-neutral mt-2" onClick={() => setActiveUser('Guest')}>Logout</button>}
+    {activePage === 'main' && <FrontPageBox updateUserID = {setActiveUserID} currentRegistrationStatus = {registrationStatus} updateRegistrationStatus = {setRegistrationStatus} updatePage={setActivePage} updateUser={setActiveUser} />}
+    {activePage === 'register' && <RegisterBox updateRegistrationStatus = {setRegistrationStatus} updatePage={setActivePage} updateUser={setActiveUser} />}
     {activePage === 'inventory' && <InventoryList updatePage={setActivePage} currentUser={activeUser} />}
     {activePage === 'addItem' && <AddItem updatePage={setActivePage} currentUser={activeUser} />}
     </>

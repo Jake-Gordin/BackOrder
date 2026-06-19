@@ -1,33 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
-
-function PopulateItems(activeUser) {
-    console.log(activeUser)
-    var itemList = [];
-    if (activeUser.activeUser === "Guest") {
-        console.log("transmitting")
-        axios.get('/items').then((response) => {
-            const regResult = response.data;
-            console.log(regResult);
-            regResult.forEach(element => {
-                console.log("adding element: " + element.User_ID);
-                itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
-            });
-        return (
-            <>
-            {itemList.map((item) => (<li key={item.ID}><label>{item.user} {item.name} {item.description} {item.quantity}</label></li>))}
-            </>
-        )
-        })
-        
-    }
-}
-function TestLabel() {
-    for (let i = 0; i < 5; i++) {
-        return (<><label>Test</label></>);
-    }
-}
-export function FrontPageBox({updatePage, updateUser}) {
+export function FrontPageBox({updatePage, updateUser, updateUserID, updateRegistrationStatus, currentRegistrationStatus}) {
     const [showRegister, setShowRegister] = useState(false);
     const [fieldUser, setUser] = useState('');
     const [fieldPass, setPass] = useState('');
@@ -54,7 +27,9 @@ export function FrontPageBox({updatePage, updateUser}) {
             }
             else {
                 updateUser(loginResult.currentUser);
+                updateUserID(loginResult.currentID);
                 setShowLoginMessage(false);
+                updateRegistrationStatus(false);
                 updatePage('inventory');
             }
         })
@@ -81,6 +56,7 @@ export function FrontPageBox({updatePage, updateUser}) {
         <div className="card-body">
             <fieldset className="fieldset">
             {ShowLoginMessage && <label>{loginMessage}</label>}
+            {currentRegistrationStatus && <label>Registration successful! Please login below.</label>}
             <label>Inventory Managers</label>
             <input type="text" className="input" onChange={changeUser} placeholder="Username" />
             <input type="password" className="input" onChange={changePass} placeholder="Password" />
@@ -88,7 +64,6 @@ export function FrontPageBox({updatePage, updateUser}) {
             <div className="divider"></div>
             <label>New Managers Register Here</label>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('register')}>Register</button>
-            { showRegister && <button className="btn btn-neutral mt-4" onClick={() => setShowRegister(false)}>Test</button>}
             </fieldset>
         </div>
         </div>
@@ -96,7 +71,7 @@ export function FrontPageBox({updatePage, updateUser}) {
     </div>
     )
 }
-export function RegisterBox({updatePage, updateUser}) {
+export function RegisterBox({updatePage, updateUser, updateRegistrationStatus}) {
     const [newFirst, setNewFirst] = useState('');
     const [newLast, setNewLast] = useState('');
     const [newUser, setNewUser] = useState('');
@@ -127,7 +102,8 @@ export function RegisterBox({updatePage, updateUser}) {
                 //show registration successful and maybe a short timer before moving to inventory as new user
                 setShowRegMessage(false);
                 updateUser(regResult.currentUser);
-                updatePage('inventory');
+                updatePage('main');
+                updateRegistrationStatus('true');
             }
     })
     }
@@ -167,12 +143,30 @@ export function RegisterBox({updatePage, updateUser}) {
     )
 }
 export function InventoryList({updatePage, currentUser}) {
+    const [items, setItems] = useState([]);
+    var itemList = [];
+    useEffect(() => {
+        if (currentUser === "Guest") {
+            console.log("transmitting")
+            axios.get('/items').then((response) => {
+                const regResult = response.data;
+                console.log(regResult);
+                regResult.forEach(element => {
+                    console.log("adding element: " + element.User_ID);
+                    itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
+                });
+                setItems(itemList);
+            })
+        }
+    }, [currentUser])
     return (
         <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
             {/* This is where items will be populated*/}
-            <PopulateItems activeUser = {currentUser}/>
+            {items.map((item) => (
+                <li key={item.id}><label>{item.user} {item.name} {item.description} {item.quantity}</label></li>
+                ))}
             {(currentUser != "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
             <div className="divider"></div>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Back</button>

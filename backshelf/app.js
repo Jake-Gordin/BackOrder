@@ -86,7 +86,8 @@ app.post('/login', (req, res) => {
       if (error) {
         console.log("DB Error: " + error.code);
         const currentUser = {
-            currentUser: "NO_USER"
+            currentUser: "NO_USER",
+            currentID: 0
         }
         res.send(currentUser);
         return;
@@ -96,19 +97,22 @@ app.post('/login', (req, res) => {
         const loginVerdict = await comparePass(reqData.pass, result[0].Password)
         if (result === undefined) {
           const currentUser = {
-            currentUser: "NO_USER"
+            currentUser: "NO_USER",
+            currentID: 0
         }
         res.send(currentUser);
         }
         if (loginVerdict) {
           const currentUser = {
-            currentUser: reqData.user
+            currentUser: reqData.user,
+            currentID: result[0].ID
           }
           res.send(currentUser);
         }
         else {
            const currentUser = {
-            currentUser: "BAD_PASS"
+            currentUser: "BAD_PASS",
+            currentID: 0
           }
           res.send(currentUser);
         }
