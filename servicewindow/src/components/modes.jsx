@@ -25,7 +25,7 @@ export function ItemDetails({item, loggedID, updatePage}) {
             description : newDescription,
             quantity : newQuantity
         }
-        axios.put('/items', item).then((response) => {
+        axios.put('/items', newPackage).then((response) => {
             const itemResult = response.data;
             if (itemResult === 'ITEM_EDIT_OK') {
                 setShowSavedMessage(true);

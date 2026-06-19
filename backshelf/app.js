@@ -166,9 +166,6 @@ app.post('/items', (req, res) => {
 app.put('/items', (req, res) => {
     const reqData = req.body;
     const sqlParams = [reqData.name, reqData.description, reqData.quantity, reqData.id];
-    sqlParams.forEach((item) => {
-      console.log(item);
-    })
     const queryText = `update items set Item_Name = ?, Description = ?, Quantity = ? where ID = ?;`
     mySQLCon.query(queryText, sqlParams, async (error, result) => {
       if (error) {
@@ -177,8 +174,23 @@ app.put('/items', (req, res) => {
         return;
       }
       else {
-        console.log(result);
         res.send("ITEM_EDIT_OK");
+      }
+    })
+})
+//delete existing item
+app.delete('/items', (req, res) => {
+    const reqData = req.body;
+    const sqlParams = [reqData.id];
+    const queryText = `delete from items where ID = ?;`
+    mySQLCon.query(queryText, sqlParams, async (error, result) => {
+      if (error) {
+        console.log("DB Error: " + error.code);
+        res.send("DB ERROR: " + error.code);
+        return;
+      }
+      else {
+        res.send("ITEM_DELETE_OK");
       }
     })
 })
