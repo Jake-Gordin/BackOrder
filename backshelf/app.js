@@ -61,8 +61,9 @@ app.get('/test', (req, res) => {
 app.post('/register', async (req, res) => {
     const reqData = req.body;
     const encryptedPass = await encrypt(reqData.pass);
-    const queryText = `insert into users (First_Name, Last_Name, Username, Password) values ('${reqData.first}', '${reqData.last}', '${reqData.user}', '${encryptedPass}');`
-    mySQLCon.query(queryText, (error, result) => {
+    const sqlparams = [reqData.first, reqData.last, reqData.user, encryptedPass];
+    const queryText = `insert into users (First_Name, Last_Name, Username, Password) values (?, ?, ?, ?);`
+    mySQLCon.query(queryText, sqlparams, (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
         res.send(error.code);
@@ -81,8 +82,9 @@ app.post('/login', (req, res) => {
     const reqData = req.body;
     const encryptedPass = encrypt(reqData.pass);
     //console.log('searching for user: ' + reqData.user);
-    const queryText = `select * from users where Username = '${reqData.user}'`;
-    mySQLCon.query(queryText, async (error, result) => {
+    const sqlparams = [reqData.user];
+    const queryText = `select * from users where Username = ?`;
+    mySQLCon.query(queryText, sqlparams, async (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
         const currentUser = {
@@ -127,9 +129,10 @@ app.post('/login', (req, res) => {
 //add new item
 app.post('/NewItem', (req, res) => {
     const reqData = req.body;
-    console.log("searching using: " + reqData.user);
-    const queryText = `select ID from users where Username = '${reqData.user}'`;
-    mySQLCon.query(queryText, async (error, result) => {
+    //console.log("searching using: " + reqData.user);
+    const sqlParams = [reqData.user];
+    const queryText = `select ID from users where Username = ?`;
+    mySQLCon.query(queryText, sqlParams, async (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
         res.send("ERR_NO_USER");
@@ -139,8 +142,9 @@ app.post('/NewItem', (req, res) => {
       try {
         const userID = result[0].ID;
         console.log("adding item using ID: " + result[0].ID);
-        const queryTextItem = `insert into items (User_ID, Item_Name, Description, Quantity) values ('${userID}', '${reqData.name}', '${reqData.description}', '${reqData.quantity}');`
-        mySQLCon.query(queryTextItem, (errorItem, resultItem) => {
+        const sqlParamItem = [userID, reqData.name, reqData.description, reqData.quantity];
+        const queryTextItem = `insert into items (User_ID, Item_Name, Description, Quantity) values (?, ?, ?, ?);`
+        mySQLCon.query(queryTextItem, sqlParamItem, (errorItem, resultItem) => {
           if (errorItem) {
             console.log("DB Error: " + error.code);
             res.send("ITEM_ADD_ERROR");
@@ -174,14 +178,15 @@ app.get('/items', (req, res) => {
 })
 //list user-specific items
 app.post('/useritems', (req, res) => {
-    console.log("received request: " + req);
-    console.log("experiment " + req.id);
+    //console.log("received request: " + req);
+    //console.log("experiment " + req.id);
     const reqData = req.body;
-    console.log("received data: " + reqData);
+    //console.log("received data: " + reqData);
     const targetID = reqData.id;
-    console.log("received request for user-specific items using ID: " + targetID)
-    const queryText = `select * from items where User_ID = ${targetID}`;
-    mySQLCon.query(queryText, async (error, result) => {
+    //console.log("received request for user-specific items using ID: " + targetID)
+    const sqlParams = [targetID];
+    const queryText = `select * from items where User_ID = ?`;
+    mySQLCon.query(queryText, sqlParams, async (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
         res.send("DB_ERROR: " + error.code);

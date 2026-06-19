@@ -1,5 +1,16 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+function itemEntry(itemKey, itemName, itemShortDescription, itemQuantity) {
+    return (
+    <tr key={itemKey}>
+        <td></td>
+        <th>{itemName}</th>
+        <td>{itemShortDescription}</td>
+        <td>{itemQuantity}</td>
+        <td><button className="btn btn-neutral mt-4">View</button></td>
+    </tr>
+    )
+}
 export function FrontPageBox({updatePage, updateUser, updateUserID, updateRegistrationStatus, currentRegistrationStatus}) {
     const [showRegister, setShowRegister] = useState(false);
     const [fieldUser, setUser] = useState('');
@@ -144,32 +155,48 @@ export function RegisterBox({updatePage, updateUser, updateRegistrationStatus}) 
 }
 export function InventoryList({updatePage, currentUser, currentID}) {
     const [items, setItems] = useState([]);
+    const [inventoryLabel, setInventorylabel] = useState('');
     var itemList = [];
     useEffect(() => {
         //no user logged in
         if (currentUser === "Guest") {
+            setInventorylabel("All items:");
             //console.log("transmitting")
             axios.get('/items').then((response) => {
                 const regResult = response.data;
                 //console.log(regResult);
                 regResult.forEach(element => {
-                    //console.log("adding element: " + element.User_ID);
-                    itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
+                    var shortDescription = '';
+                    if (element.Description.length > 100) {
+                        shortDescription = (element.Description.slice(0, 100) + "...");
+                    }
+                    else {
+                        shortDescription = element.Description;
+                    }
+                    itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, shortDescription: shortDescription, quantity: element.Quantity})
                 });
                 setItems(itemList);
             })
         }
         //user name / id are in state
         else {
+            setInventorylabel("Items created by " + currentUser + ":");
             const itemRequest = {
                 id: currentID 
             }
-            console.log("pulling selective inventory for: " + itemRequest.id)
+            //console.log("pulling selective inventory for: " + itemRequest.id)
             axios.post('/useritems', itemRequest).then((response) => {
                 const regResult = response.data;
-                console.log(regResult);
+                //console.log(regResult);
                 regResult.forEach(element => {
-                    itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
+                    var shortDescription = '';
+                    if (element.Description.length > 100) {
+                        shortDescription = (element.Description.slice(0, 100) + "...");
+                    }
+                    else {
+                        shortDescription = element.Description;
+                    }
+                    itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, shortDescription: shortDescription, quantity: element.Quantity})
                 });
                 setItems(itemList);
             })
@@ -180,9 +207,25 @@ export function InventoryList({updatePage, currentUser, currentID}) {
         <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
             {/* This is where items will be populated*/}
-            {items.map((item) => (
-                <li key={item.id}><label>{item.user} {item.name} {item.description} {item.quantity}</label></li>
+            <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+            <table className="table">
+                {/* head */}
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    <th>View</th>
+                </tr>
+                </thead>
+                <tbody>
+                {items.map((item) => (
+                    itemEntry(item.id, item.name, item.shortDescription, item.quantity)
                 ))}
+                </tbody>
+            </table>
+        </div>
             {(currentUser != "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
             <div className="divider"></div>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Back</button>
