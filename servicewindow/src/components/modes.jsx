@@ -38,6 +38,22 @@ export function ItemDetails({item, loggedID, updatePage}) {
             }
         })
     }
+    function deleteItem() {
+        const newPackage = {
+            id : item.id,
+        }
+        axios.delete('/items', newPackage).then((response) => {
+            const itemResult = response.data;
+            if (itemResult === 'ITEM_DELETE_OK') {
+                setEditModeActive(false);
+                updatePage('inventory');
+                console.log('item deleted')
+            }
+            else {
+                console.log("item delete error");
+            }
+        })
+    }
     return (
             <div className="hero bg-base-200 min-h-screen">
             <div className="hero-content flex-col lg:flex-row-reverse">
@@ -64,7 +80,7 @@ export function ItemDetails({item, loggedID, updatePage}) {
                     {editModeActive && <td><input type="text" onChange={changeQuantity} className="input" value={newQuantity}/></td>}
                     {loggedID > 0 && editModeActive == false && <td><button className="btn btn-neutral mt-4" onClick={()=>setEditModeActive(true)}>Edit</button></td>}
                     {loggedID > 0 && editModeActive && <td><button className="btn btn-neutral mt-4" onClick={()=>{saveItem()}}>Save</button></td>}
-                    {loggedID > 0 && <td><button className="btn btn-neutral mt-4" >Delete</button></td>}
+                    {loggedID > 0 && <td><button className="btn btn-neutral mt-4" onClick={()=>{deleteItem()}}>Delete</button></td>}
                     <td><button className="btn btn-neutral mt-4" onClick={()=>{setEditModeActive(false), setShowSavedMessage(false), updatePage('inventory')}}>Cancel</button></td>
                     </tr>
                 </tbody>
