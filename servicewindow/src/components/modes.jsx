@@ -39,11 +39,10 @@ export function ItemDetails({item, loggedID, updatePage}) {
         })
     }
     function deleteItem() {
-        const newPackage = {
-            id : item.id,
-        }
-        axios.post('/delete', newPackage).then((response) => {
-            const itemResult = response.data;
+        axios.delete('/items').then((response) => {
+            params: {
+                id: item.id
+            }
             if (itemResult === 'ITEM_DELETE_OK') {
                 setEditModeActive(false);
                 updatePage('inventory');
