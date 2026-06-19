@@ -187,6 +187,7 @@ app.put('/items', (req, res) => {
 app.delete('/items', (req, res) => {
     const reqData = req.body;
     targetID = reqData.ID;
+    console.log(reqData)
     console.log("received request to delete item with ID: " + targetID)
     const sqlParams = [targetID];
     const queryText = `delete from items where ID = ?;`
@@ -197,7 +198,6 @@ app.delete('/items', (req, res) => {
         return;
       }
       else {
-        console.log(result)
         res.send("ITEM_DELETE_OK");
       }
     })
