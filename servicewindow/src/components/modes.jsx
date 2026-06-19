@@ -146,6 +146,7 @@ export function InventoryList({updatePage, currentUser, currentID}) {
     const [items, setItems] = useState([]);
     var itemList = [];
     useEffect(() => {
+        //no user logged in
         if (currentUser === "Guest") {
             //console.log("transmitting")
             axios.get('/items').then((response) => {
@@ -158,10 +159,11 @@ export function InventoryList({updatePage, currentUser, currentID}) {
                 setItems(itemList);
             })
         }
+        //user name / id are in state
         else {
-            console.log("pulling selective inventory")
+            console.log("pulling selective inventory for: " + currentID)
             const itemRequest = {
-                targetID: currentID 
+                id: currentID 
             }
             axios.post('/items', itemRequest).then((response) => {
                 const regResult = response.data;
