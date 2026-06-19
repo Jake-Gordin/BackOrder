@@ -62,7 +62,7 @@ app.get('/test', (req, res) => {
 app.post('/register', async (req, res) => {
     const reqData = req.body;
     const encryptedPass = await encrypt(reqData.pass);
-    const UUID = randomInt();
+    const UUID = crypto.randomInt(50000);
     console.log(UUID);
     const sqlparams = [UUID, reqData.first, reqData.last, reqData.user, encryptedPass];
     const queryText = `insert into users (ID, First_Name, Last_Name, Username, Password) values (?, ?, ?, ?, ?);`
@@ -145,7 +145,7 @@ app.post('/items', (req, res) => {
       try {
         const userID = result[0].ID;
         console.log("adding item using ID: " + result[0].ID);
-        const UUID = randomInt();
+        const UUID = crypto.randomInt(50000);
         console.log(UUID);
         const sqlParamItem = [UUID, userID, reqData.name, reqData.description, reqData.quantity];
         const queryTextItem = `insert into items (ID, User_ID, Item_Name, Description, Quantity) values (?, ?, ?, ?, ?);`
