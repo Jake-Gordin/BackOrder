@@ -166,6 +166,9 @@ app.post('/items', (req, res) => {
 app.put('/items', (req, res) => {
     const reqData = req.body;
     const sqlParams = [reqData.name, reqData.description, reqData.quantity, reqData.id];
+    sqlParams.forEach((item) => {
+      console.log(item);
+    })
     const queryText = `update items set Item_Name = ?, Description = ?, Quantity = ? where ID = ?;`
     mySQLCon.query(queryText, sqlParams, async (error, result) => {
       if (error) {
