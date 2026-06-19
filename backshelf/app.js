@@ -172,3 +172,18 @@ app.get('/items', (req, res) => {
       }
     })
 })
+//list user-specific items
+app.post('/items', (req, res) => {
+    const targetID = req.targetID;
+    const queryText = `select * from items where ID = '${targetID}'`;
+    mySQLCon.query(queryText, async (error, result) => {
+      if (error) {
+        console.log("DB Error: " + error.code);
+        res.send("DB_ERROR: " + error.code);
+        return;
+      }
+      else {
+        res.send(result);
+      }
+    })
+})

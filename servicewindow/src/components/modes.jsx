@@ -101,7 +101,7 @@ export function RegisterBox({updatePage, updateUser, updateRegistrationStatus}) 
             else {
                 //show registration successful and maybe a short timer before moving to inventory as new user
                 setShowRegMessage(false);
-                updateUser(regResult.currentUser);
+                //updateUser(regResult.currentUser);
                 updatePage('main');
                 updateRegistrationStatus('true');
             }
@@ -142,17 +142,31 @@ export function RegisterBox({updatePage, updateUser, updateRegistrationStatus}) 
     </div>
     )
 }
-export function InventoryList({updatePage, currentUser}) {
+export function InventoryList({updatePage, currentUser, currentID}) {
     const [items, setItems] = useState([]);
     var itemList = [];
     useEffect(() => {
         if (currentUser === "Guest") {
-            console.log("transmitting")
+            //console.log("transmitting")
             axios.get('/items').then((response) => {
                 const regResult = response.data;
-                console.log(regResult);
+                //console.log(regResult);
                 regResult.forEach(element => {
-                    console.log("adding element: " + element.User_ID);
+                    //console.log("adding element: " + element.User_ID);
+                    itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
+                });
+                setItems(itemList);
+            })
+        }
+        else {
+            const itemRequest = {
+                targetID: currentID 
+            }
+            axios.post('/items', itemRequest).then((response) => {
+                const regResult = response.data;
+                //console.log(regResult);
+                regResult.forEach(element => {
+                    //console.log("adding element: " + element.User_ID);
                     itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
                 });
                 setItems(itemList);
