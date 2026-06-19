@@ -1,13 +1,93 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-function itemEntry(itemKey, itemName, itemShortDescription, itemQuantity) {
+function ItemDetailsModal({item, loggedID}) {
+    const [editModeActive, setEditModeActive] = useState(false);
+    const [newName, setNewName] = useState(item.name);
+    const [newQuantity, setNewQuantity] = useState(item.quantity);
+    const [newDescription, setNewDescription] = useState(item.description);
+    const [showSavedMessage, setShowSavedMessage] = useState(false);
+    const changeName = (e) => {
+        setNewName(e.target.value);
+        setShowSavedMessage(false);
+    }
+    const changeQuantity = (e) => {
+        setNewQuantity(e.target.value);
+        setShowSavedMessage(false);
+    }
+    const changeDescription = (e) => {
+        setNewDescription(e.target.value);
+        setShowSavedMessage(false);
+    }
+    const detailsID = (item.id +"Details");
+    function saveItem() {
+        const newPackage = {
+            id : item.id,
+            name : newName,
+            description : newDescription,
+            quantity : newQuantity
+        }
+        axios.put('/items', item).then((response) => {
+            const itemResult = response.data;
+            if (itemResult === 'ITEM_EDIT_OK') {
+                setShowSavedMessage(true);
+                setEditModeActive(false);
+            }
+            else {
+                console.log("item edit error");
+            }
+        })
+    }
+    function prepItem() {
+        
+        //console.log("sending package: " + newPackage.name);
+        newItem(newPackage);
+        }
     return (
-    <tr key={itemKey}>
-        <td></td>
-        <th>{itemName}</th>
-        <td>{itemShortDescription}</td>
-        <td>{itemQuantity}</td>
-        <td><button className="btn btn-neutral mt-4">View</button></td>
+        <dialog id={detailsID} className="modal" key={item.id}>
+        <div className="modal-box">
+             <table className="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Quantity</th>
+                    {loggedID > 0 && <th>Edit Item</th>}
+                    {loggedID > 0 && <th>Delete Item</th>}
+                </tr>
+                </thead>
+                <tbody>
+                    <tr key={item.id + "details"}>
+                    {editModeActive == false && <th>{item.name}</th>}
+                    {editModeActive && <td><input type="text" onChange={changeName} className="input" value={item.name}/></td>}
+                    {editModeActive == false && <td>{item.description}</td>}
+                    {editModeActive && <td><textarea className="textarea" value={item.description} onChange={changeDescription}></textarea></td>}
+                    {editModeActive == false && <td>{item.quantity}</td>}
+                    {editModeActive && <td><input type="text" onChange={changeName} className="input" value={item.quantity}/></td>}
+                    {loggedID > 0 && editModeActive == false && <td><button className="btn btn-neutral mt-4" onClick={()=>setEditModeActive(true)}>Edit</button></td>}
+                    {loggedID > 0 && editModeActive && <td><button className="btn btn-neutral mt-4" >Save</button></td>}
+                    {loggedID > 0 && <td><button className="btn btn-neutral mt-4" >Delete</button></td>}
+                    </tr>
+                </tbody>
+            </table>
+            <div className="modal-action">
+            <form method="dialog">
+                {showSavedMessage && <label>Changes saved!</label>}
+                {/* if there is a button in form, it will close the modal */}
+                <button className="btn btn-neutral mt-4" onClick={()=>{setEditModeActive(false), setShowSavedMessage(false)}}>Close</button>
+            </form>
+            </div>
+        </div>
+        </dialog>
+    )
+}
+function ItemListEntry({item}) {
+    const detailsID = (item.id +"Details");
+    return (
+    <tr key={item.id}>
+        <th>{item.name}</th>
+        <td>{item.shortDescription}</td>
+        <td>{item.quantity}</td>
+        <td><button className="btn btn-neutral mt-4" onClick={()=>document.getElementById(detailsID).showModal()}>View</button></td>
     </tr>
     )
 }
@@ -185,7 +265,7 @@ export function InventoryList({updatePage, currentUser, currentID}) {
                 id: currentID 
             }
             //console.log("pulling selective inventory for: " + itemRequest.id)
-            axios.post('/useritems', itemRequest).then((response) => {
+            axios.post('/users/items', itemRequest).then((response) => {
                 const regResult = response.data;
                 //console.log(regResult);
                 regResult.forEach(element => {
@@ -206,25 +286,26 @@ export function InventoryList({updatePage, currentUser, currentID}) {
         <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
-            {/* This is where items will be populated*/}
             <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
             <table className="table">
-                {/* head */}
                 <thead>
                 <tr>
-                    <th></th>
                     <th>Name</th>
                     <th>Description</th>
                     <th>Quantity</th>
-                    <th>View</th>
+                    <th>Details</th>
                 </tr>
                 </thead>
                 <tbody>
                 {items.map((item) => (
-                    itemEntry(item.id, item.name, item.shortDescription, item.quantity)
+                    <ItemListEntry item={item} key={item.id}/>
                 ))}
                 </tbody>
             </table>
+            {items.map((item) => (
+                    <ItemDetailsModal item={item} loggedID={currentID} key={item.id}/>
+            ))}
+            {items.length === 0 && <span className="loading loading-spinner loading-xs"></span>}
         </div>
             {(currentUser != "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
             <div className="divider"></div>
@@ -250,7 +331,7 @@ export function AddItem({updatePage, currentUser}) {
         setNewQuantity(e.target.value);
     }
     function newItem(newPackage) {
-        axios.post('/NewItem', newPackage).then((response) => {
+        axios.post('/items', newPackage).then((response) => {
             const itemResult = response.data;
             if (itemResult === 'ITEM_ADD_OK') {
                 updatePage('inventory');

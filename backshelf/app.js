@@ -127,7 +127,7 @@ app.post('/login', (req, res) => {
     })
 })
 //add new item
-app.post('/NewItem', (req, res) => {
+app.post('/items', (req, res) => {
     const reqData = req.body;
     //console.log("searching using: " + reqData.user);
     const sqlParams = [reqData.user];
@@ -162,6 +162,22 @@ app.post('/NewItem', (req, res) => {
       } 
     })
 })
+//edit existing item
+app.put('/items', (req, res) => {
+    const reqData = req.body;
+    const sqlParams = [reqData.name, reqData.description, reqData.quantity, reqData.id];
+    const queryText = `update items set Item_Name = ?, Description = ?, Quantity = ? where ID = ?;`
+    mySQLCon.query(queryText, sqlParams, async (error, result) => {
+      if (error) {
+        console.log("DB Error: " + error.code);
+        res.send("DB ERROR: " + error.code);
+        return;
+      }
+      else {
+        res.send("ITEM_EDIT_OK");
+      }
+    })
+})
 //list all items
 app.get('/items', (req, res) => {
     const queryText = `select * from items`;
@@ -177,7 +193,7 @@ app.get('/items', (req, res) => {
     })
 })
 //list user-specific items
-app.post('/useritems', (req, res) => {
+app.post('/users/items', (req, res) => {
     //console.log("received request: " + req);
     //console.log("experiment " + req.id);
     const reqData = req.body;
