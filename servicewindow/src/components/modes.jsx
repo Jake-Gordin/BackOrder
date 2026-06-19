@@ -1,5 +1,32 @@
 import { useState } from 'react';
 import axios from 'axios';
+
+function PopulateItems(activeUser) {
+    console.log(activeUser)
+    var itemList = [];
+    if (activeUser.activeUser === "Guest") {
+        console.log("transmitting")
+        axios.get('/items').then((response) => {
+            const regResult = response.data;
+            console.log(regResult);
+            regResult.forEach(element => {
+                console.log("adding element: " + element.User_ID);
+                itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
+            });
+        return (
+            <>
+            {itemList.map((item) => (<li key={item.ID}><label>{item.user} {item.name} {item.description} {item.quantity}</label></li>))}
+            </>
+        )
+        })
+        
+    }
+}
+function TestLabel() {
+    for (let i = 0; i < 5; i++) {
+        return (<><label>Test</label></>);
+    }
+}
 export function FrontPageBox({updatePage, updateUser}) {
     const [showRegister, setShowRegister] = useState(false);
     const [fieldUser, setUser] = useState('');
@@ -143,20 +170,9 @@ export function InventoryList({updatePage, currentUser}) {
     return (
         <div className="hero bg-base-200 min-h-screen">
         <div className="hero-content flex-col lg:flex-row-reverse">
-            <div className="text-center lg:text-left">
+        <div className="text-center lg:text-left">
             {/* This is where items will be populated*/}
-            {function populateItems() {
-                if (currentUser === "Guest") {
-                    axios.get('/items').then((response) => {
-                    const regResult = response.data;
-                        regResult.forEach(element => {
-                            return (
-                                <label>{element.ID} {element.User_ID} {element.Item_Name} {element.Description} {element.Quantity}</label>
-                            )
-                        });
-                    })
-                }
-            }}
+            <PopulateItems activeUser = {currentUser}/>
             {(currentUser != "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
             <div className="divider"></div>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Back</button>
