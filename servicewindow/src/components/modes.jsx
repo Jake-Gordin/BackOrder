@@ -165,7 +165,7 @@ export function InventoryList({updatePage, currentUser, currentID}) {
             const itemRequest = {
                 id: currentID 
             }
-            axios.post('/items', itemRequest).then((response) => {
+            axios.post('/useritems', itemRequest).then((response) => {
                 const regResult = response.data;
                 console.log(regResult);
                 regResult.forEach(element => {

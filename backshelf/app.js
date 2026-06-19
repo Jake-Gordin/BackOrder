@@ -173,7 +173,7 @@ app.get('/items', (req, res) => {
     })
 })
 //list user-specific items
-app.post('/items', (req, res) => {
+app.post('/useritems', (req, res) => {
     const reqData = req.data;
     console.log("received data: " + reqData);
     const targetID = reqData.id;
