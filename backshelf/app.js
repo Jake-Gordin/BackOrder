@@ -182,9 +182,9 @@ app.put('/items', (req, res) => {
     })
 })
 //delete existing item
-app.delete('/delete', (req, res) => {
-    const reqData = req.body;
-    const sqlParams = [reqData.id];
+app.delete('/delete:id', (req, res) => {
+    const targetID = req.params;
+    const sqlParams = [targetID];
     const queryText = `delete from items where ID = ?;`
     mySQLCon.query(queryText, sqlParams, async (error, result) => {
       if (error) {
