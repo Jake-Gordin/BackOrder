@@ -161,10 +161,10 @@ export function InventoryList({updatePage, currentUser, currentID}) {
         }
         //user name / id are in state
         else {
-            console.log("pulling selective inventory for: " + currentID)
             const itemRequest = {
                 id: currentID 
             }
+            console.log("pulling selective inventory for: " + itemRequest.id)
             axios.post('/useritems', itemRequest).then((response) => {
                 const regResult = response.data;
                 console.log(regResult);

@@ -174,6 +174,7 @@ app.get('/items', (req, res) => {
 })
 //list user-specific items
 app.post('/useritems', (req, res) => {
+    console.log("received request: " + req);
     const reqData = req.data;
     console.log("received data: " + reqData);
     const targetID = reqData.id;
