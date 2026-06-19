@@ -179,7 +179,7 @@ app.put('/items', (req, res) => {
     })
 })
 //delete existing item
-app.delete('/items', (req, res) => {
+app.post('/delete', (req, res) => {
     const reqData = req.body;
     console.log(reqData);
     console.log(reqData.id);

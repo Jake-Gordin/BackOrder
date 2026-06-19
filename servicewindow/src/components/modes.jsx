@@ -42,7 +42,7 @@ export function ItemDetails({item, loggedID, updatePage}) {
         const newPackage = {
             id : item.id,
         }
-        axios.delete('/items', newPackage).then((response) => {
+        axios.post('/delete', newPackage).then((response) => {
             const itemResult = response.data;
             if (itemResult === 'ITEM_DELETE_OK') {
                 setEditModeActive(false);
