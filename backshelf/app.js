@@ -4,6 +4,7 @@ const mysql = require ('mysql');
 const app = express();
 const cors = require('cors');
 const bcrypt = require('bcrypt');
+const randomInt = require('crypto');
 app.use(cors());
 app.use(express.json());
 //begin listening on 5555 for front-end
@@ -61,8 +62,9 @@ app.get('/test', (req, res) => {
 app.post('/register', async (req, res) => {
     const reqData = req.body;
     const encryptedPass = await encrypt(reqData.pass);
-    const sqlparams = [reqData.first, reqData.last, reqData.user, encryptedPass];
-    const queryText = `insert into users (First_Name, Last_Name, Username, Password) values (?, ?, ?, ?);`
+    const UUID = randomInt();
+    const sqlparams = [UUID, reqData.first, reqData.last, reqData.user, encryptedPass];
+    const queryText = `insert into users (ID, First_Name, Last_Name, Username, Password) values (?, ?, ?, ?, ?);`
     mySQLCon.query(queryText, sqlparams, (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
@@ -142,8 +144,9 @@ app.post('/items', (req, res) => {
       try {
         const userID = result[0].ID;
         console.log("adding item using ID: " + result[0].ID);
-        const sqlParamItem = [userID, reqData.name, reqData.description, reqData.quantity];
-        const queryTextItem = `insert into items (User_ID, Item_Name, Description, Quantity) values (?, ?, ?, ?);`
+        const UUID = randomInt();
+        const sqlParamItem = [UUID, userID, reqData.name, reqData.description, reqData.quantity];
+        const queryTextItem = `insert into items (ID, User_ID, Item_Name, Description, Quantity) values (?, ?, ?, ?, ?);`
         mySQLCon.query(queryTextItem, sqlParamItem, (errorItem, resultItem) => {
           if (errorItem) {
             console.log("DB Error: " + error.code);
@@ -179,7 +182,7 @@ app.put('/items', (req, res) => {
     })
 })
 //delete existing item
-app.post('/delete', (req, res) => {
+app.delete('/delete', (req, res) => {
     const reqData = req.body;
     const sqlParams = [reqData.id];
     const queryText = `delete from items where ID = ?;`
