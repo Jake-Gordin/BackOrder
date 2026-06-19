@@ -4,7 +4,7 @@ const mysql = require ('mysql');
 const app = express();
 const cors = require('cors');
 const bcrypt = require('bcrypt');
-const randomInt = require('crypto');
+const crypto = require('crypto');
 app.use(cors());
 app.use(express.json());
 //begin listening on 5555 for front-end
