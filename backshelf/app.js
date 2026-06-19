@@ -175,6 +175,7 @@ app.get('/items', (req, res) => {
 //list user-specific items
 app.post('/items', (req, res) => {
     const targetID = req.targetID;
+    console.log("received request for user-specific items using ID: " + targetID)
     const queryText = `select * from items where User_ID = ${targetID}`;
     console.log("received request for user-specific items")
     mySQLCon.query(queryText, async (error, result) => {
