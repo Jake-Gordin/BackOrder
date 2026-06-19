@@ -76,7 +76,7 @@ export function ItemDetails({item, loggedID, updatePage}) {
                     {editModeActive == false && <td>{item.description}</td>}
                     {editModeActive && <td><textarea className="textarea" value={newDescription} onChange={changeDescription}></textarea></td>}
                     {editModeActive == false && <td>{item.quantity}</td>}
-                    {editModeActive && <td><input type="text" onChange={changeQuantity} className="input" value={newQuantity}/></td>}
+                    {editModeActive && <td><input type="number" onChange={changeQuantity} className="input" value={newQuantity}/></td>}
                     {loggedID > 0 && editModeActive == false && <td><button className="btn btn-neutral mt-4" onClick={()=>setEditModeActive(true)}>Edit</button></td>}
                     {loggedID > 0 && editModeActive && <td><button className="btn btn-neutral mt-4" onClick={()=>{saveItem()}}>Save</button></td>}
                     {loggedID > 0 && <td><button className="btn btn-neutral mt-4" onClick={()=>{deleteItem()}}>Delete</button></td>}
