@@ -174,6 +174,7 @@ app.put('/items', (req, res) => {
         return;
       }
       else {
+        console.log(result);
         res.send("ITEM_EDIT_OK");
       }
     })

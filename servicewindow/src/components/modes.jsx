@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-function ItemDetailsModal({item, loggedID}) {
+import axios from 'axios'
+export function ItemDetails({item, loggedID, updatePage}) {
     const [editModeActive, setEditModeActive] = useState(false);
     const [newName, setNewName] = useState(item.name);
     const [newQuantity, setNewQuantity] = useState(item.quantity);
@@ -18,7 +18,6 @@ function ItemDetailsModal({item, loggedID}) {
         setNewDescription(e.target.value);
         setShowSavedMessage(false);
     }
-    const detailsID = (item.id +"Details");
     function saveItem() {
         const newPackage = {
             id : item.id,
@@ -31,20 +30,19 @@ function ItemDetailsModal({item, loggedID}) {
             if (itemResult === 'ITEM_EDIT_OK') {
                 setShowSavedMessage(true);
                 setEditModeActive(false);
+                updatePage('inventory');
+                console.log('item updated')
             }
             else {
                 console.log("item edit error");
             }
         })
     }
-    function prepItem() {
-        
-        //console.log("sending package: " + newPackage.name);
-        newItem(newPackage);
-        }
     return (
-        <dialog id={detailsID} className="modal" key={item.id}>
-        <div className="modal-box">
+            <div className="hero bg-base-200 min-h-screen">
+            <div className="hero-content flex-col lg:flex-row-reverse">
+            <div className="text-center lg:text-left">
+            <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
              <table className="table">
                 <thead>
                 <tr>
@@ -53,41 +51,44 @@ function ItemDetailsModal({item, loggedID}) {
                     <th>Quantity</th>
                     {loggedID > 0 && <th>Edit Item</th>}
                     {loggedID > 0 && <th>Delete Item</th>}
+                    <th>Cancel</th>
                 </tr>
                 </thead>
                 <tbody>
                     <tr key={item.id + "details"}>
                     {editModeActive == false && <th>{item.name}</th>}
-                    {editModeActive && <td><input type="text" onChange={changeName} className="input" value={item.name}/></td>}
+                    {editModeActive && <td><input type="text" onChange={changeName} className="input" value={newName}/></td>}
                     {editModeActive == false && <td>{item.description}</td>}
-                    {editModeActive && <td><textarea className="textarea" value={item.description} onChange={changeDescription}></textarea></td>}
+                    {editModeActive && <td><textarea className="textarea" value={newDescription} onChange={changeDescription}></textarea></td>}
                     {editModeActive == false && <td>{item.quantity}</td>}
-                    {editModeActive && <td><input type="text" onChange={changeName} className="input" value={item.quantity}/></td>}
+                    {editModeActive && <td><input type="text" onChange={changeQuantity} className="input" value={newQuantity}/></td>}
                     {loggedID > 0 && editModeActive == false && <td><button className="btn btn-neutral mt-4" onClick={()=>setEditModeActive(true)}>Edit</button></td>}
-                    {loggedID > 0 && editModeActive && <td><button className="btn btn-neutral mt-4" >Save</button></td>}
+                    {loggedID > 0 && editModeActive && <td><button className="btn btn-neutral mt-4" onClick={()=>{saveItem()}}>Save</button></td>}
                     {loggedID > 0 && <td><button className="btn btn-neutral mt-4" >Delete</button></td>}
+                    <td><button className="btn btn-neutral mt-4" onClick={()=>{setEditModeActive(false), setShowSavedMessage(false), updatePage('inventory')}}>Cancel</button></td>
                     </tr>
                 </tbody>
             </table>
             <div className="modal-action">
             <form method="dialog">
                 {showSavedMessage && <label>Changes saved!</label>}
-                {/* if there is a button in form, it will close the modal */}
-                <button className="btn btn-neutral mt-4" onClick={()=>{setEditModeActive(false), setShowSavedMessage(false)}}>Close</button>
+                
             </form>
             </div>
-        </div>
-        </dialog>
+            </div>
+            </div>
+            </div>
+            </div>
     )
 }
-function ItemListEntry({item}) {
+function ItemListEntry({item, updatePage, setDetailItem}) {
     const detailsID = (item.id +"Details");
     return (
     <tr key={item.id}>
         <th>{item.name}</th>
         <td>{item.shortDescription}</td>
         <td>{item.quantity}</td>
-        <td><button className="btn btn-neutral mt-4" onClick={()=>document.getElementById(detailsID).showModal()}>View</button></td>
+        <td><button className="btn btn-neutral mt-4" onClick={()=> {updatePage('details'), setDetailItem(item)}}>View</button></td>
     </tr>
     )
 }
@@ -233,7 +234,7 @@ export function RegisterBox({updatePage, updateUser, updateRegistrationStatus}) 
     </div>
     )
 }
-export function InventoryList({updatePage, currentUser, currentID}) {
+export function InventoryList({updatePage, currentUser, currentID, setDetailItem}) {
     const [items, setItems] = useState([]);
     const [inventoryLabel, setInventorylabel] = useState('');
     var itemList = [];
@@ -298,18 +299,15 @@ export function InventoryList({updatePage, currentUser, currentID}) {
                 </thead>
                 <tbody>
                 {items.map((item) => (
-                    <ItemListEntry item={item} key={item.id}/>
+                    <ItemListEntry item={item} updatePage={updatePage} setDetailItem={setDetailItem} key={item.id}/>
                 ))}
                 </tbody>
             </table>
-            {items.map((item) => (
-                    <ItemDetailsModal item={item} loggedID={currentID} key={item.id}/>
-            ))}
             {items.length === 0 && <span className="loading loading-spinner loading-xs"></span>}
         </div>
-            {(currentUser != "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
+            {(currentUser !== "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
             <div className="divider"></div>
-            <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Back</button>
+            {currentUser === "Guest" &&<button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Back</button>}
         </div>
         </div>
         </div>
