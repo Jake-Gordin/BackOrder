@@ -159,12 +159,13 @@ export function InventoryList({updatePage, currentUser, currentID}) {
             })
         }
         else {
+            console.log("pulling selective inventory")
             const itemRequest = {
                 targetID: currentID 
             }
             axios.post('/items', itemRequest).then((response) => {
                 const regResult = response.data;
-                //console.log(regResult);
+                console.log(regResult);
                 regResult.forEach(element => {
                     //console.log("adding element: " + element.User_ID);
                     itemList.push({id: element.ID, user: element.User_ID, name: element.Item_Name, description: element.Description, quantity: element.Quantity})
@@ -224,7 +225,7 @@ export function AddItem({updatePage, currentUser}) {
             description : newDescription,
             quantity : newQuantity
         }
-        console.log("sending package: " + newPackage.name);
+        //console.log("sending package: " + newPackage.name);
         newItem(newPackage);
         }
     return (

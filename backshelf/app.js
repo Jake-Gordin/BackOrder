@@ -176,6 +176,7 @@ app.get('/items', (req, res) => {
 app.post('/items', (req, res) => {
     const targetID = req.targetID;
     const queryText = `select * from items where ID = '${targetID}'`;
+    console.log("received request for user-specific items")
     mySQLCon.query(queryText, async (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
