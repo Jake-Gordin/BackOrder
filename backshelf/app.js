@@ -187,8 +187,6 @@ app.put('/items', (req, res) => {
 app.delete('/items', (req, res) => {
     const reqData = req.body;
     targetID = reqData.id;
-    console.log(reqData)
-    console.log("received request to delete item with ID: " + targetID)
     const sqlParams = [targetID];
     const queryText = `delete from items where ID = ?;`
     mySQLCon.query(queryText, sqlParams, async (error, result) => {

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { FrontPageBox, RegisterBox, InventoryList, AddItem, ItemDetails }  from './components/modes'
+import { FrontPage, Register, InventoryList, AddItem, ItemDetails }  from './components/modes'
 import { testCom } from './scripts/api'
 import './App.css'
 export default function App() {
@@ -8,21 +8,19 @@ export default function App() {
   const [activeUserID, setActiveUserID] = useState(0);
   const [registrationStatus, setRegistrationStatus] = useState(false);
   const [detailItem, setDetailItem] = useState(undefined);
-  function logOut() {
-    setActiveUser('Guest');
-    setActiveUserID(0);
-    setActivePage('main');
-  }
+ 
   return (
     <>
-    {activeUser != "Guest" && <label>Currently logged in as: {activeUser}</label>}
-    <div className="divider"></div>
-    {activeUser != "Guest" && <button className="btn btn-neutral mt-2" onClick={() => logOut()}>Logout</button>}
-    {activePage === 'main' && <FrontPageBox updateUserID = {setActiveUserID} currentRegistrationStatus = {registrationStatus} updateRegistrationStatus = {setRegistrationStatus} updatePage={setActivePage} updateUser={setActiveUser} />}
-    {activePage === 'register' && <RegisterBox updateRegistrationStatus = {setRegistrationStatus} updatePage={setActivePage} updateUser={setActiveUser} />}
-    {activePage === 'inventory' && <InventoryList updatePage={setActivePage} setDetailItem={setDetailItem} currentID = {activeUserID} currentUser={activeUser} />}
+    {activePage === 'main' && <FrontPage updateUserID = {setActiveUserID} currentRegistrationStatus = {registrationStatus} updateRegistrationStatus = {setRegistrationStatus} updatePage={setActivePage} updateUser={setActiveUser} />}
+    {activePage === 'register' && <Register updateRegistrationStatus = {setRegistrationStatus} updatePage={setActivePage} updateUser={setActiveUser} />}
+    {activePage === 'inventory' && <InventoryList updatePage={setActivePage} setDetailItem={setDetailItem} currentID = {activeUserID} currentUser={activeUser} setActiveUser={setActiveUser} setActiveUserID={setActiveUserID} />}
     {activePage === 'addItem' && <AddItem updatePage={setActivePage} currentUser={activeUser} />}
     {activePage === 'details' && <ItemDetails updatePage={setActivePage} loggedID = {activeUserID} updatePage={setActivePage} item={detailItem} />}
+    <footer className="footer sm:footer-horizontal footer-center bg-base-300 text-base-content p-4">
+    <aside>
+    <p>Created 2026 by 2d Lt George Gordin for Supra Coders practical exam</p>
+    </aside>
+    </footer>
     </>
   )
 }

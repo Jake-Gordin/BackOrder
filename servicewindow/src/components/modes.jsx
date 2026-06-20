@@ -52,7 +52,7 @@ export function ItemDetails({item, loggedID, updatePage}) {
         })
     }
     return (
-            <div className="hero bg-base-200 min-h-screen">
+            <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
             <div className="hero-content flex-col lg:flex-row-reverse">
             <div className="text-center lg:text-left">
             <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -101,11 +101,11 @@ function ItemListEntry({item, updatePage, setDetailItem}) {
         <th>{item.name}</th>
         <td>{item.shortDescription}</td>
         <td>{item.quantity}</td>
-        <td><button className="btn btn-neutral mt-4" onClick={()=> {updatePage('details'), setDetailItem(item)}}>View</button></td>
+        <td><button className="btn btn-neutral" onClick={()=> {updatePage('details'), setDetailItem(item)}}>View</button></td>
     </tr>
     )
 }
-export function FrontPageBox({updatePage, updateUser, updateUserID, updateRegistrationStatus, currentRegistrationStatus}) {
+export function FrontPage({updatePage, updateUser, updateUserID, updateRegistrationStatus, currentRegistrationStatus}) {
     const [showRegister, setShowRegister] = useState(false);
     const [fieldUser, setUser] = useState('');
     const [fieldPass, setPass] = useState('');
@@ -144,31 +144,28 @@ export function FrontPageBox({updatePage, updateUser, updateUserID, updateRegist
             user : fieldUser,
             pass : fieldPass
         }
-        //console.log("prepped login package");
         login(loginPackage);
         }
     return (
-    <div className="hero bg-base-200 min-h-screen">
-    <div className="hero-content flex-col lg:flex-row-reverse">
-        <div className="text-center lg:text-left">
+    <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
+    <div className="hero-content flex-col items-center gap-16">
+        <div className="text-center">
         <h1 className="text-5xl font-bold">Ready to Rock?</h1>
         <p className="py-6">
             We sell guitars and guitar accessories. Click below to see our inventory!
         </p>
-        <button className="btn btn-neutral mt-4" onClick={() => updatePage('inventory')}>Continue</button>
+        <button className="btn btn-neutral mt-4" onClick={() => updatePage('inventory')}>Continue as Guest</button>
         </div>
         <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
         <div className="card-body">
             <fieldset className="fieldset">
             {ShowLoginMessage && <label>{loginMessage}</label>}
             {currentRegistrationStatus && <label>Registration successful! Please login below.</label>}
-            <label>Inventory Managers</label>
             <input type="text" className="input" onChange={changeUser} placeholder="Username" />
             <input type="password" className="input" onChange={changePass} placeholder="Password" />
-            <button className="btn btn-neutral mt-4" onClick={() => prepLogin()}>Login</button>
+            <button className="btn btn-neutral mt-4" onClick={() => prepLogin()}>Manager Login</button>
             <div className="divider"></div>
-            <label>New Managers Register Here</label>
-            <button className="btn btn-neutral mt-4" onClick={() => updatePage('register')}>Register</button>
+            <button className="btn btn-neutral mt-4" onClick={() => updatePage('register')}>New Manager Registration</button>
             </fieldset>
         </div>
         </div>
@@ -176,7 +173,7 @@ export function FrontPageBox({updatePage, updateUser, updateUserID, updateRegist
     </div>
     )
 }
-export function RegisterBox({updatePage, updateUser, updateRegistrationStatus}) {
+export function Register({updatePage, updateUser, updateRegistrationStatus}) {
     const [newFirst, setNewFirst] = useState('');
     const [newLast, setNewLast] = useState('');
     const [newUser, setNewUser] = useState('');
@@ -222,10 +219,9 @@ export function RegisterBox({updatePage, updateUser, updateRegistrationStatus}) 
         newRegister(newPackage);
         }
     return (
-    <div className="hero bg-base-200 min-h-screen">
-    <div className="hero-content flex-col lg:flex-row-reverse">
+    <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
+    <div className="hero-content flex-col items-center">
         <div className="text-center lg:text-left">
-        <h1 className="text-5xl font-bold">Welcome Aboard.</h1>
         <p className="py-6">
             Please fill out the below information. Usernames must be unique.
         </p>
@@ -247,10 +243,15 @@ export function RegisterBox({updatePage, updateUser, updateRegistrationStatus}) 
     </div>
     )
 }
-export function InventoryList({updatePage, currentUser, currentID, setDetailItem}) {
+export function InventoryList({updatePage, currentUser, currentID, setDetailItem, setActiveUser, setActiveUserID}) {
     const [items, setItems] = useState([]);
     const [inventoryLabel, setInventorylabel] = useState('');
     var itemList = [];
+    function logOut() {
+        setActiveUser('Guest');
+        setActiveUserID(0);
+        updatePage('main');
+    }
     useEffect(() => {
         //no user logged in
         if (currentUser === "Guest") {
@@ -297,7 +298,7 @@ export function InventoryList({updatePage, currentUser, currentID, setDetailItem
         }
     }, [currentUser])
     return (
-        <div className="hero bg-base-200 min-h-screen">
+        <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
         <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
             <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
@@ -316,11 +317,17 @@ export function InventoryList({updatePage, currentUser, currentID, setDetailItem
                 ))}
                 </tbody>
             </table>
-            {items.length === 0 && <span className="loading loading-spinner loading-xs"></span>}
         </div>
-            {(currentUser !== "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
+            <div className="hero-content flex-row items-center justify-center">
+                {(currentUser !== "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
+                {items.length === 0 && <span>No items found. Log in as a manager to add some!</span>}
+            </div>
             <div className="divider"></div>
-            {currentUser === "Guest" &&<button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Back</button>}
+            <div className="hero-content flex-col lg:flex-row">
+                {currentUser !== "Guest" && <label className='font-bold'>Welcome, {currentUser}</label>}
+                {currentUser === "Guest" && <button className="btn btn-neutral" onClick={() => updatePage('main')}>Back</button>}
+                {currentUser !== "Guest" && <button className="btn btn-neutral" onClick={() => logOut()}>Logout</button>}
+            </div>
         </div>
         </div>
         </div>
@@ -365,10 +372,9 @@ export function AddItem({updatePage, currentUser}) {
         newItem(newPackage);
         }
     return (
-    <div className="hero bg-base-200 min-h-screen">
-    <div className="hero-content flex-col lg:flex-row-reverse">
+    <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
+    <div className="hero-content flex-col">
         <div className="text-center lg:text-left">
-        <h1 className="text-5xl font-bold">Add New Item</h1>
         <p className="py-6">
             Fill out the item parameters below.
         </p>
