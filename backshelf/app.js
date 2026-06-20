@@ -9,6 +9,7 @@ app.use(cors());
 app.use(express.json());
 //begin listening on 5555 for front-end
 app.listen(5555, () => console.log(`Listening on port 5555`));
+//utility functions
 //connect to local mysql
 const mySQLCon = mysql.createConnection({
   host: "localhost",
@@ -17,7 +18,6 @@ const mySQLCon = mysql.createConnection({
 })
 mySQLCon.connect(function(error) {
   if (error) throw erorr;
-  console.log("connected to local mySQL");
   var sqlDB = "use inventory";
   mySQLCon.query(sqlDB, function (err, result) {
     if (err) throw err;
@@ -30,7 +30,6 @@ async function encrypt(pass) {
   try {
     const encryptedPass = await bcrypt.hash(pass, salt);
     return encryptedPass;
-    console.log("added encrypted password");
   }
   catch (error) {
     console.log("Failed encryption: ", error);
@@ -48,21 +47,12 @@ async function comparePass(pass, encryptedPass) {
   }
 }
 //responses
-//basic comms test
-app.get('/test', (req, res) => {
-  console.log('received message');
-  var queryText = "select * from users;"
-  mySQLCon.query(queryText, function (error, result) {
-    if (error) throw error;
-    //var resultFormat = JSON.stringify(result);
-    res.send(result);
-  })
-})
 //new user registration
 app.post('/register', async (req, res) => {
     const reqData = req.body;
     const encryptedPass = 
     encrypt(reqData.pass);
+    //I kept the UUIDs as ints IAW the schema provided, but normally I would use a more standard UUID into binary for efficiency
     const UUID = crypto.randomInt(50000);
     //console.log(UUID);
     const sqlparams = [UUID, reqData.first, reqData.last, reqData.user, encryptedPass];
@@ -74,7 +64,6 @@ app.post('/register', async (req, res) => {
         return;
       }
       const resultFormat = JSON.stringify(result);
-      //console.log("got this result from function: " + resultFormat)
       const currentUser = {
             currentUser: reqData.user
         }
@@ -85,7 +74,6 @@ app.post('/register', async (req, res) => {
 app.post('/login', (req, res) => {
     const reqData = req.body;
     const encryptedPass = encrypt(reqData.pass);
-    //console.log('searching for user: ' + reqData.user);
     const sqlparams = [reqData.user];
     const queryText = `select * from users where Username = ?`;
     mySQLCon.query(queryText, sqlparams, async (error, result) => {
@@ -98,8 +86,8 @@ app.post('/login', (req, res) => {
         res.send(currentUser);
         return;
       }
-      //console.log(result[0].Password);
       try {
+        //there may be a more efficient way to do comparison with this encryption, but this works
         const loginVerdict = await comparePass(reqData.pass, result[0].Password)
         if (result === undefined) {
           const currentUser = {
@@ -133,7 +121,6 @@ app.post('/login', (req, res) => {
 //add new item
 app.post('/items', (req, res) => {
     const reqData = req.body;
-    //console.log("searching using: " + reqData.user);
     const sqlParams = [reqData.user];
     const queryText = `select ID from users where Username = ?`;
     mySQLCon.query(queryText, sqlParams, async (error, result) => {
@@ -145,9 +132,8 @@ app.post('/items', (req, res) => {
       console.log(result);
       try {
         const userID = result[0].ID;
-        console.log("adding item using ID: " + result[0].ID);
+        //see UUID in registration module
         const UUID = crypto.randomInt(50000);
-        //console.log(UUID);
         const sqlParamItem = [UUID, userID, reqData.name, reqData.description, reqData.quantity];
         const queryTextItem = `insert into items (ID, User_ID, Item_Name, Description, Quantity) values (?, ?, ?, ?, ?);`
         mySQLCon.query(queryTextItem, sqlParamItem, (errorItem, resultItem) => {
@@ -217,12 +203,8 @@ app.get('/items', (req, res) => {
 })
 //list user-specific items
 app.post('/users/items', (req, res) => {
-    //console.log("received request: " + req);
-    //console.log("experiment " + req.id);
     const reqData = req.body;
-    //console.log("received data: " + reqData);
     const targetID = reqData.id;
-    //console.log("received request for user-specific items using ID: " + targetID)
     const sqlParams = [targetID];
     const queryText = `select * from items where User_ID = ?`;
     mySQLCon.query(queryText, sqlParams, async (error, result) => {

@@ -3,6 +3,7 @@ import {useEffect, useState} from 'react';
 import axios from 'axios'
 //basic axios properties
 axios.defaults.baseURL = 'http://snakeserver.tech:5555'
+//sub-components
 //individual item listings component
 function ItemListEntry({item, updatePage, setDetailItem}) {
     return (
@@ -14,6 +15,7 @@ function ItemListEntry({item, updatePage, setDetailItem}) {
         </tr>
     )
 }
+//main page components
 //item details page
 export function ItemDetails({item, loggedID, updatePage}) {
     //states
