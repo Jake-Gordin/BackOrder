@@ -146,6 +146,11 @@ export function FrontPage({updatePage, updateUser, updateUserID, updateRegistrat
         }
         login(loginPackage);
         }
+    const checkEnter = (event) => {
+        if (event.key === 'Enter') {
+            prepLogin();
+        }
+    }
     return (
     <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
     <div className="hero-content flex-col items-center gap-16">
@@ -162,8 +167,8 @@ export function FrontPage({updatePage, updateUser, updateUserID, updateRegistrat
             {ShowLoginMessage && <label>{loginMessage}</label>}
             {currentRegistrationStatus && <label>Registration successful! Please login below.</label>}
             <input type="text" className="input" onChange={changeUser} placeholder="Username" />
-            <input type="password" className="input" onChange={changePass} placeholder="Password" />
-            <button className="btn btn-neutral mt-4" onClick={() => prepLogin()}>Manager Login</button>
+            <input type="password" className="input" onChange={changePass} onKeyDown={checkEnter} placeholder="Password" />
+            <button className="btn btn-neutral mt-4" onClick={() => prepLogin()} >Manager Login</button>
             <div className="divider"></div>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('register')}>New Manager Registration</button>
             </fieldset>
@@ -218,6 +223,11 @@ export function Register({updatePage, updateUser, updateRegistrationStatus}) {
         }
         newRegister(newPackage);
         }
+    const checkEnter = (event) => {
+        if (event.key === 'Enter') {
+            prepRegister();
+        }
+    }
     return (
     <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
     <div className="hero-content flex-col items-center">
@@ -233,7 +243,7 @@ export function Register({updatePage, updateUser, updateRegistrationStatus}) {
             <input id="newFirstField" type="text" onChange={changeFirst} className="input" placeholder="First Name" />
             <input id="newLastField" type="text" onChange={changeLast} className="input" placeholder="Last Name" />
             <input id="newUserField" type="text" onChange={changeUser} className="input" placeholder="Username" />
-            <input id="newPassField" type="text" onChange={changePass} className="input" placeholder="New Password" />
+            <input id="newPassField" type="text" onChange={changePass} onKeyDown={checkEnter} className="input" placeholder="New Password"/>
             <button className="btn btn-neutral mt-4" onClick={() => prepRegister()}>Register</button>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('main')}>Cancel</button>
             </fieldset>
@@ -319,7 +329,7 @@ export function InventoryList({updatePage, currentUser, currentID, setDetailItem
             </table>
         </div>
             <div className="hero-content flex-row items-center justify-center">
-                {(currentUser !== "Guest") && <button className="btn btn-neutral mt-4" onClick={() => updatePage('addItem')}>New Item</button>}
+                {(currentUser !== "Guest") && <button className="btn btn-neutral" onClick={() => updatePage('addItem')}>New Item</button>}
                 {items.length === 0 && <span>No items found. Log in as a manager to add some!</span>}
             </div>
             <div className="divider"></div>
