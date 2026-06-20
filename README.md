@@ -5,7 +5,7 @@
 
 Hello! 
 
-    This is 2nd Lt George Gordin, and I have been delighted to participate in this practical exam in
+This is 2nd Lt George Gordin, and I have been delighted to participate in this practical exam in
 an effort to earn my Z-Prefix. This readme serves as a brief guide to my project, but if you have any other questions please feel free to contact me:
 
 [Military Email](mailto:george.gordin@spaceforce.mil)
