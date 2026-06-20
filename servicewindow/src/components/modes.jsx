@@ -1,11 +1,28 @@
-import { useEffect, useState } from 'react';
+//imports
+import {useEffect, useState} from 'react';
 import axios from 'axios'
+//basic axios properties
+axios.defaults.baseURL = 'http://snakeserver.tech:5555'
+//individual item listings component
+function ItemListEntry({item, updatePage, setDetailItem}) {
+    return (
+        <tr key={item.id}>
+            <th>{item.name}</th>
+            <td>{item.shortDescription}</td>
+            <td>{item.quantity}</td>
+            <td><button className="btn btn-neutral" onClick={()=> {updatePage('details'), setDetailItem(item)}}>View</button></td>
+        </tr>
+    )
+}
+//item details page
 export function ItemDetails({item, loggedID, updatePage}) {
+    //states
     const [editModeActive, setEditModeActive] = useState(false);
     const [newName, setNewName] = useState(item.name);
     const [newQuantity, setNewQuantity] = useState(item.quantity);
     const [newDescription, setNewDescription] = useState(item.description);
     const [showSavedMessage, setShowSavedMessage] = useState(false);
+    //changing states on input change
     const changeName = (e) => {
         setNewName(e.target.value);
         setShowSavedMessage(false);
@@ -18,6 +35,7 @@ export function ItemDetails({item, loggedID, updatePage}) {
         setNewDescription(e.target.value);
         setShowSavedMessage(false);
     }
+    //put method for item editing
     function saveItem() {
         const newPackage = {
             id : item.id,
@@ -38,6 +56,7 @@ export function ItemDetails({item, loggedID, updatePage}) {
             }
         })
     }
+    //delete method for item deletion
     function deleteItem() {
         axios.delete('/items', {data: {id: item.id}}).then((response) => {
             const itemResult = response.data;
@@ -51,74 +70,66 @@ export function ItemDetails({item, loggedID, updatePage}) {
             }
         })
     }
+    //visual component for item details page
     return (
-            <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
-            <div className="hero-content flex-col lg:flex-row-reverse">
-            <div className="text-center lg:text-left">
-            <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-             <table className="table">
+        <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
+        <div className="hero-content flex-col lg:flex-row-reverse">
+        <div className="text-center lg:text-left">
+        <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
+            <table className="table">
                 <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    {loggedID > 0 && <th>Edit Item</th>}
-                    {loggedID > 0 && <th>Delete Item</th>}
-                    <th>Cancel</th>
-                </tr>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        {loggedID > 0 && <th>Edit Item</th>}
+                        {loggedID > 0 && <th>Delete Item</th>}
+                        <th>Cancel</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr key={item.id + "details"}>
-                    {editModeActive == false && <th>{item.name}</th>}
-                    {editModeActive && <td><input type="text" onChange={changeName} className="input" value={newName}/></td>}
-                    {editModeActive == false && <td>{item.description}</td>}
-                    {editModeActive && <td><textarea className="textarea" value={newDescription} onChange={changeDescription}></textarea></td>}
-                    {editModeActive == false && <td>{item.quantity}</td>}
-                    {editModeActive && <td><input type="number" onChange={changeQuantity} className="input" value={newQuantity}/></td>}
-                    {loggedID > 0 && editModeActive == false && <td><button className="btn btn-neutral mt-4" onClick={()=>setEditModeActive(true)}>Edit</button></td>}
-                    {loggedID > 0 && editModeActive && <td><button className="btn btn-neutral mt-4" onClick={()=>{saveItem()}}>Save</button></td>}
-                    {loggedID > 0 && <td><button className="btn btn-neutral mt-4" onClick={()=>{deleteItem()}}>Delete</button></td>}
-                    <td><button className="btn btn-neutral mt-4" onClick={()=>{setEditModeActive(false), setShowSavedMessage(false), updatePage('inventory')}}>Cancel</button></td>
+                        {editModeActive == false && <th>{item.name}</th>}
+                        {editModeActive && <td><input type="text" onChange={changeName} className="input" value={newName}/></td>}
+                        {editModeActive == false && <td>{item.description}</td>}
+                        {editModeActive && <td><textarea className="textarea" value={newDescription} onChange={changeDescription}></textarea></td>}
+                        {editModeActive == false && <td>{item.quantity}</td>}
+                        {editModeActive && <td><input type="number" onChange={changeQuantity} className="input" value={newQuantity}/></td>}
+                        {loggedID > 0 && editModeActive == false && <td><button className="btn btn-neutral mt-4" onClick={()=>setEditModeActive(true)}>Edit</button></td>}
+                        {loggedID > 0 && editModeActive && <td><button className="btn btn-neutral mt-4" onClick={()=>{saveItem()}}>Save</button></td>}
+                        {loggedID > 0 && <td><button className="btn btn-neutral mt-4" onClick={()=>{deleteItem()}}>Delete</button></td>}
+                        <td><button className="btn btn-neutral mt-4" onClick={()=>{setEditModeActive(false), setShowSavedMessage(false), updatePage('inventory')}}>Cancel</button></td>
                     </tr>
                 </tbody>
-            </table>
-            <div className="modal-action">
+        </table>
+        <div className="modal-action">
             <form method="dialog">
                 {showSavedMessage && <label>Changes saved!</label>}
-                
             </form>
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
     )
 }
-function ItemListEntry({item, updatePage, setDetailItem}) {
-    const detailsID = (item.id +"Details");
-    return (
-    <tr key={item.id}>
-        <th>{item.name}</th>
-        <td>{item.shortDescription}</td>
-        <td>{item.quantity}</td>
-        <td><button className="btn btn-neutral" onClick={()=> {updatePage('details'), setDetailItem(item)}}>View</button></td>
-    </tr>
-    )
-}
+//front page (landing)
 export function FrontPage({updatePage, updateUser, updateUserID, updateRegistrationStatus, currentRegistrationStatus}) {
+    //states
     const [showRegister, setShowRegister] = useState(false);
     const [fieldUser, setUser] = useState('');
     const [fieldPass, setPass] = useState('');
     const [ShowLoginMessage, setShowLoginMessage] = useState(false);
     const [loginMessage, setLoginMessage] = useState('');
+    //update states based on input changes
     const changeUser = (e) => {
         setUser(e.target.value);
     }
     const changePass = (e) => {
         setPass(e.target.value);
     }
+    //post method for login / authentication
     function login(newLogin) {
-        //console.log("preparing to transmit");
         axios.post('/login', newLogin).then((response) => {
             //console.log("response received");
             const loginResult = response.data;
@@ -139,18 +150,23 @@ export function FrontPage({updatePage, updateUser, updateUserID, updateRegistrat
             }
         })
     }
+    //making a auth object
     function prepLogin() {
         const loginPackage = {
             user : fieldUser,
             pass : fieldPass
         }
         login(loginPackage);
-        }
+    }
+    //check to see if the key pressed was enter, and if so, handling that
     const checkEnter = (event) => {
         if (event.key === 'Enter') {
             prepLogin();
         }
     }
+    //login form and some feedback from the registration process
+    //I wanted a succesful reg to kick back here for convenience, but I also had to add
+    //some kind of feedback to the user, hence the currentRegistrationStatus prop 
     return (
     <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
     <div className="hero-content flex-col items-center gap-16">
@@ -178,13 +194,16 @@ export function FrontPage({updatePage, updateUser, updateUserID, updateRegistrat
     </div>
     )
 }
+//registration page
 export function Register({updatePage, updateUser, updateRegistrationStatus}) {
+    //states
     const [newFirst, setNewFirst] = useState('');
     const [newLast, setNewLast] = useState('');
     const [newUser, setNewUser] = useState('');
     const [newPass, setNewPass] = useState('');
     const [ShowRegMessage, setShowRegMessage] = useState(false);
     const [regMessage, setRegMessage] = useState('');
+    // update states when changing inputs
     const changeFirst = (e) => {
         setNewFirst(e.target.value);
     }
@@ -197,6 +216,7 @@ export function Register({updatePage, updateUser, updateRegistrationStatus}) {
     const changePass = (e) => {
         setNewPass(e.target.value);
     }
+    //register a new useer
     function newRegister(newPackage) {
         axios.post('/register', newPackage).then((response) => {
             const regResult = response.data;
@@ -212,8 +232,9 @@ export function Register({updatePage, updateUser, updateRegistrationStatus}) {
                 updatePage('main');
                 updateRegistrationStatus('true');
             }
-    })
+        })
     }
+    //prepare object for new registration
     function prepRegister() {
         const newPackage = {
             first : newFirst,
@@ -223,12 +244,14 @@ export function Register({updatePage, updateUser, updateRegistrationStatus}) {
         }
         newRegister(newPackage);
         }
+    //same as above, checking to see if the key is enter for a litte hacky form behavior
     const checkEnter = (event) => {
         if (event.key === 'Enter') {
             prepRegister();
         }
     }
     return (
+    //rendering the registration page
     <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
     <div className="hero-content flex-col items-center">
         <div className="text-center lg:text-left">
@@ -253,23 +276,25 @@ export function Register({updatePage, updateUser, updateRegistrationStatus}) {
     </div>
     )
 }
+//main inventory display page
 export function InventoryList({updatePage, currentUser, currentID, setDetailItem, setActiveUser, setActiveUserID}) {
+    //states
     const [items, setItems] = useState([]);
     const [inventoryLabel, setInventorylabel] = useState('');
     var itemList = [];
+    //the log out button is only present here. Not in scope, but intuitive and useful for testing
     function logOut() {
         setActiveUser('Guest');
         setActiveUserID(0);
         updatePage('main');
     }
+    //useEffect here keeps a loop from occuring
     useEffect(() => {
         //no user logged in
         if (currentUser === "Guest") {
             setInventorylabel("All items:");
-            //console.log("transmitting")
             axios.get('/items').then((response) => {
                 const regResult = response.data;
-                //console.log(regResult);
                 regResult.forEach(element => {
                     var shortDescription = '';
                     if (element.Description.length > 100) {
@@ -289,10 +314,8 @@ export function InventoryList({updatePage, currentUser, currentID, setDetailItem
             const itemRequest = {
                 id: currentID 
             }
-            //console.log("pulling selective inventory for: " + itemRequest.id)
             axios.post('/users/items', itemRequest).then((response) => {
                 const regResult = response.data;
-                //console.log(regResult);
                 regResult.forEach(element => {
                     var shortDescription = '';
                     if (element.Description.length > 100) {
@@ -307,6 +330,7 @@ export function InventoryList({updatePage, currentUser, currentID, setDetailItem
             })
         }
     }, [currentUser])
+    //renders the main inventory list, primarily using .map to populate it with components
     return (
         <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
         <div className="hero-content flex-col lg:flex-row-reverse">
@@ -343,12 +367,15 @@ export function InventoryList({updatePage, currentUser, currentID, setDetailItem
         </div>
     )
 }
+//add new item to inventory
 export function AddItem({updatePage, currentUser}) {
+    //states
     const [newName, setNewName] = useState('');
     const [newDescription, setNewDescription] = useState('');
     const [newQuantity, setNewQuantity] = useState(0);
     const [addItemMessage, setAddItemMessage] = useState('');
     const [showAddItemMessage, setShowAddItemMessage] = useState(false);
+    //keep states updated with input values, same as above
     const changeName = (e) => {
         setNewName(e.target.value);
     }
@@ -358,29 +385,28 @@ export function AddItem({updatePage, currentUser}) {
     const changeQuantity = (e) => {
         setNewQuantity(e.target.value);
     }
-    function newItem(newPackage) {
-        axios.post('/items', newPackage).then((response) => {
-            const itemResult = response.data;
-            if (itemResult === 'ITEM_ADD_OK') {
-                updatePage('inventory');
-                setShowAddItemMessage(false);
-            }
-            else {
-                setAddItemMessage('Error! Check item parameters and try again.');
-                setShowAddItemMessage(true);
-            }
-    })
-    }
-    function prepItem() {
-        const newPackage = {
+    //post method to add new item
+    function addNewItem() {
+        const newItem = {
             user : currentUser,
             name : newName,
             description : newDescription,
             quantity : newQuantity
         }
-        //console.log("sending package: " + newPackage.name);
-        newItem(newPackage);
-        }
+        axios.post ('/items', newItem).then((response) => {
+            const itemResult = response.data;
+            console.log("response from server: " + itemResult)
+            if (itemResult === "ITEM_ADD_OK") {
+                setShowAddItemMessage(false);
+                updatePage('inventory');
+            }
+            else {
+                setAddItemMessage("Error adding item!");
+                setShowAddItemMessage(true);
+            }
+  })
+    }
+    //renders the add item page
     return (
     <div className="hero bg-base-200 min-h-screen" style={{backgroundImage: "url('/backgrounds/shapelinedBG.jpg')"}}>
     <div className="hero-content flex-col">
@@ -396,7 +422,7 @@ export function AddItem({updatePage, currentUser}) {
             <input id="newFirstField" type="text" onChange={changeName} className="input" placeholder="Item Name" />
             <textarea className="textarea" placeholder="Item Description" onChange={changeDescription}></textarea>
             <input id="newLastField" type="number" min="0" step="1" max="10000" onChange={changeQuantity} className="input" placeholder="Quantity" />
-            <button className="btn btn-neutral mt-4" onClick={() => prepItem()}>Add</button>
+            <button className="btn btn-neutral mt-4" onClick={() => addNewItem()}>Add</button>
             <button className="btn btn-neutral mt-4" onClick={() => updatePage('inventory')}>Cancel</button>
             </fieldset>
         </div>

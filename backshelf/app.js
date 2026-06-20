@@ -61,7 +61,8 @@ app.get('/test', (req, res) => {
 //new user registration
 app.post('/register', async (req, res) => {
     const reqData = req.body;
-    const encryptedPass = await encrypt(reqData.pass);
+    const encryptedPass = 
+    encrypt(reqData.pass);
     const UUID = crypto.randomInt(50000);
     //console.log(UUID);
     const sqlparams = [UUID, reqData.first, reqData.last, reqData.user, encryptedPass];
