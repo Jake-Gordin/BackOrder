@@ -41,6 +41,9 @@ It is managed via PM2 on the VPS.
 
 ## Database
 
+This repo now includes a snapshot of the database for use in local deployments. This is in the /database directory.
+As a result of this, I have also externalized the DB credentials, expecting a .env in the /backshelf directory.
+
 The database is running on mariaDB also installed on the VPS. The DB part of this project is simple, and I have included some screenshots just to demonstrate my attempt to adhere to the prescribed schema (and show the example data on the server as of now).
 
 ![Users Schema](./screenshots/users_schema.png)
