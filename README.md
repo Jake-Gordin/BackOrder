@@ -47,7 +47,7 @@ As a result of this, I have also externalized the DB credentials, expecting a .e
 DB_HOST=localhost\
 DB_USER=//intended username\
 DB_PASSWORD=//intended password\
-DB_DATABASE=inventory\
+DB_DATABASE=inventory
 
 
 The database is running on mariaDB also installed on the VPS. The DB part of this project is simple, and I have included some screenshots just to demonstrate my attempt to adhere to the prescribed schema (and show the example data on the server as of now).
