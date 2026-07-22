@@ -44,7 +44,6 @@ It is managed via PM2 on the VPS.
 This repo now includes a snapshot of the database for use in local deployments. This is in the /database directory.
 
 As a result of this, I have also externalized the DB credentials, expecting a .env in the /backshelf directory with the following four parameters:
-
 DB_HOST=localhost
 DB_USER=//intended username
 DB_PASSWORD=//intended password
