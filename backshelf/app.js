@@ -1,4 +1,5 @@
 //definitions and requirements
+require('dotenv').config()
 const express = require ('express');
 const mysql = require ('mysql');
 const app = express();
@@ -12,9 +13,10 @@ app.listen(5555, () => console.log(`Listening on port 5555`));
 //utility functions
 //connect to local mysql
 const mySQLCon = mysql.createConnection({
-  host: "localhost",
-  user: "clerk",
-  password: "dbpass"
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE
 })
 mySQLCon.connect(function(error) {
   if (error) throw erorr;
