@@ -52,8 +52,7 @@ async function comparePass(pass, encryptedPass) {
 //new user registration
 app.post('/register', async (req, res) => {
     const reqData = req.body;
-    const encryptedPass = 
-    encrypt(reqData.pass);
+    const encryptedPass = await encrypt(reqData.pass);
     //I kept the UUIDs as ints IAW the schema provided, but normally I would use a more standard UUID into binary for efficiency
     const UUID = crypto.randomInt(50000);
     //console.log(UUID);
