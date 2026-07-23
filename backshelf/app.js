@@ -59,9 +59,13 @@ app.post('/register', async (req, res) => {
     //console.log(UUID);
     const sqlparams = [UUID, reqData.first, reqData.last, reqData.user, encryptedPass];
     const queryText = `insert into users (ID, First_Name, Last_Name, Username, Password) values (?, ?, ?, ?, ?);`
+    //working on registration error
+    console.log("prepped query: " + queryText);
+
     mySQLCon.query(queryText, sqlparams, (error, result) => {
       if (error) {
         console.log("DB Error: " + error.code);
+        console.log("DB Error Message: " + error.message);
         res.send(error.code);
         return;
       }
