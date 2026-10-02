@@ -1,6 +1,15 @@
 //definitions and requirements
 require('dotenv').config()
 const express = require ('express');
+const https = require ('https');
+const fs = require ('fs');
+const port = 5555;
+var cert = fs.readFileSync('/etc/letsencrypt/live/snakeserver.tech/fullchain.pem');
+var key = fs.readFileSync('/etc/letsencrypt/live/snakeserver.tech/privkey.pem');
+var options = {
+  key: key,
+  cert: cert
+};
 const mysql = require ('mysql');
 const app = express();
 const cors = require('cors');
@@ -8,8 +17,10 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 app.use(cors());
 app.use(express.json());
-//begin listening on 5555 for front-end
-app.listen(5555, () => console.log(`Listening on port 5555`));
+//start server
+var server = https.createServer(options, app);
+//begin express listening
+server.listen(port, () => console.log(`server listening for https on port: ` + port));
 //utility functions
 //connect to local mysql
 const mySQLCon = mysql.createConnection({
